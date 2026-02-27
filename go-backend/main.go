@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"instantanea/internal/middlewares"
 	"instantanea/internal/users"
 	"log"
 	"net/http"
@@ -18,7 +19,7 @@ func main() {
 	defer cancel()
 
 
-	connString := "este string tiene que ser remplazado con el string de conexion a la base de datos"
+	connString := "place holder para el string de conexion a la base de datos"
 
 	pool, err := pgxpool.New(ctx, connString)
 
@@ -41,6 +42,6 @@ func main() {
 
 	fmt.Println("Inicio el servidor")
 
-	err = http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe(":8080", middlewares.CORS(mux))
 	log.Fatal(err)
 }

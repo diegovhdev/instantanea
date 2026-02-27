@@ -115,7 +115,7 @@ func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.Handle("POST /register", middlewares.CORS(http.HandlerFunc(h.Register)))
-	mux.Handle("POST /login", middlewares.CORS(http.HandlerFunc(h.Login)))
-	mux.Handle("GET /test", middlewares.CORS(middlewares.Auth(http.HandlerFunc(h.Test))))
+	mux.Handle("POST /register", http.HandlerFunc(h.Register))
+	mux.Handle("POST /login", http.HandlerFunc(h.Login))
+	mux.Handle("GET /test", middlewares.Auth(http.HandlerFunc(h.Test)))
 }
