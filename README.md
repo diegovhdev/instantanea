@@ -7,7 +7,7 @@
 2. correr en la linea de comandos:
 `go mod tidy`
 
-3. conseguir el string de la conexion a la base de datos(yo se las paso por privado) y cambiarla por el que tiene la variable connString
+3. conseguir el string de la conexion a la base de datos(yo se las paso por privado) y cambiarla por el que tiene la variable connString en main.go
 `connString := "..."`
 
 4. si en la linea de comandos ves:
