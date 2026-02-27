@@ -29,7 +29,7 @@ significa que todo salio bien
 2. correr en la linea de comandos:
 `npm install`
 
-3. si no hubo problema entonces corre el siguiente comando para desarrollar y escribir codigo
+3. si no hubo problema entonces corre el siguiente comando para desarrollar y escribir codigo:
 `npm run dev`
 
 4. deberia verse algo así:
