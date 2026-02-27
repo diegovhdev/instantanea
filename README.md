@@ -33,13 +33,13 @@ significa que todo salio bien
 `npm run dev`
 
 4. deberia verse algo así:
-`
+```
   VITE v7.3.1  ready in 1149 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
   ➜  press h + enter to show help
-` 
+```
 
 5. entra en tu navegador a la direccion que aparezca en Local
 
