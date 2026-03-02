@@ -1,4 +1,4 @@
-# Pasos para correr el servidor de go
+# Pasos para correr el servidor de Go
 
 0. tener Go correctamente instalado
 
@@ -10,12 +10,13 @@
 3. conseguir el string de la conexion a la base de datos(yo se las paso por privado) y cambiarla por el que tiene la variable connString en main.go
 `connString := "..."`
 
-4. si en la linea de comandos ves:
+4. correr en la linea de comandos:
+`go run .`
+
+5. si en la linea de comandos ves:
 `Inicio el servidor`
 significa que todo salio bien
 
-5. correr en la linea de comandos:
-`go run .`
 
 6. para cancelar el servidor es CTRL + C en la linea de comandos
 
