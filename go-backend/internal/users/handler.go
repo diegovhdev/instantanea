@@ -81,12 +81,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	userFound, err := h.FindByUsername(user.Username, r.Context())
 
 	if err != nil {
-		http.Error(w, "USER NOT FOUND", http.StatusNotFound)
+		http.Error(w, "no se encontro un usuario con ese nombre", http.StatusNotFound)
 		return
 	}
 
 	if err := helpers.CheckPassword(userFound.Password, user.Password); err != nil {
-		http.Error(w, "INCORRECT PASSWORD", http.StatusUnauthorized)
+		http.Error(w, "contraseña incorrecta", http.StatusUnauthorized)
 		return
 	}
 
@@ -106,6 +106,16 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name: "access_token",
+		Value: "",
+		Path: "/",
+		MaxAge: -1,
+		HttpOnly: true,
+	})
+}
+
 func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	a := struct{
 		Message string `json:"message"`
@@ -117,5 +127,6 @@ func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("POST /register", http.HandlerFunc(h.Register))
 	mux.Handle("POST /login", http.HandlerFunc(h.Login))
+	mux.Handle("GET /logout", middlewares.Auth(http.HandlerFunc(h.Logout)))
 	mux.Handle("GET /test", middlewares.Auth(http.HandlerFunc(h.Test)))
 }

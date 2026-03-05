@@ -19,7 +19,7 @@ func main() {
 	defer cancel()
 
 
-	connString := "place holder para el string de conexion a la base de datos"
+	connString := "postgresql://neondb_owner:npg_b9xtmQZKS7gc@ep-old-sun-aeiz9ky3-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 	pool, err := pgxpool.New(ctx, connString)
 

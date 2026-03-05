@@ -1,9 +1,11 @@
 <script>
   import InputField from "./InputField.svelte";
+  import Spinner from "./Spinner.svelte";
 
-let {textButton, textTitle, fieldsVals, callback} = $props()
+let {textButton, textTitle, fieldsVals, callback, onError, onSuccess} = $props()
 
 let fields = $state(fieldsVals)
+let initSpinner = $state(false)
 
 const gridRowTemplate = Array(fields.length).fill("1fr").join("_")
 
@@ -13,14 +15,21 @@ const clearForm = () => {
   }
 }
 
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault()
   const payload = {}
   for (const field of fields) {
     payload[field.name] = field.value
   }
-  callback(payload)
+  initSpinner = true
+  try {
+    await callback(payload)
+    onSuccess(payload)
+  } catch(error) {
+    onError(error)
+  }
   clearForm()
+  initSpinner = false
 } 
 
 </script>
@@ -30,5 +39,17 @@ const handleSubmit = (e) => {
   {#each fields as field (field.name)}
   <InputField label={field.label} bind:value={field.value} type={field.type}/>
   {/each}
-  <button class="bg-gray-600 p-3 rounded-xl border-2 text-white font-bold mt-2">{textButton}</button>
+  <button class="bg-gray-600 w-auto h-12 rounded-xl border-2 text-white font-bold mt-2 hover:bg-gray-800 px-3">
+    {#if initSpinner}
+      <Spinner --color-theme="white"/>
+    {:else}
+      {textButton}
+    {/if}
+  </button>
 </form>
+
+<style>
+  span {
+    opacity: 0;
+  }
+</style>
