@@ -19,7 +19,7 @@ export async function login(payload) {
 }
 
 export async function register(payload) {
-  const response = await fetch(`${prefix}/login`, {
+  const response = await fetch(`${prefix}/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
