@@ -1,7 +1,6 @@
 package users
 
 import (
-	"encoding/json"
 	"instantanea/internal/helpers"
 	"instantanea/internal/middlewares"
 	"net/http"
@@ -17,17 +16,22 @@ type Handler struct {
 
 
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
-	var user User
 
+	user, err := helpers.ValidateJSON[User](r.Body, h.Validator)
 
-	if err := json.NewDecoder(r.Body).Decode(&user);  err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err != nil {
+		http.Error(w, "las validaciones para los inputs fallaron", http.StatusBadRequest)
 		return
 	}
 
-	if err := helpers.ValidateStruct(h.Validator, user); err != nil {
-		helpers.WriteJSON(w, http.StatusBadRequest, err)
-		return
+	if _, err := h.FindByUsername(user.Username, r.Context()); err == nil {
+		http.Error(w, "el nombre de usuario ya existe", http.StatusConflict)
+		return	
+	}
+
+	if _, err := h.FindByEmail(user.Email, r.Context()); err == nil {
+		http.Error(w, "el correo ya esta siendo usado", http.StatusConflict)
+		return	
 	}
 
 	hashedPassword, err := helpers.HashPassword(user.Password)
@@ -66,15 +70,11 @@ func (h *Handler) Get(w http.ResponseWriter, r *http.Request) {
 
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
-	var user UserRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	user, err := helpers.ValidateJSON[UserRequest](r.Body, h.Validator)
 
-	if err := helpers.ValidateStruct(h.Validator, user); err != nil {
-		helpers.WriteJSON(w, http.StatusBadRequest, err)
+	if err != nil {
+		http.Error(w, "las validaciones para los inputs fallaron", http.StatusBadRequest)
 		return
 	}
 

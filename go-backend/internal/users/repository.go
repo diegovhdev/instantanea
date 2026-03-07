@@ -35,6 +35,18 @@ func (r *Repository) FindByUsername(username string, ctx context.Context) (User,
 	return u, err
 }
 
+func (r *Repository) FindByEmail(email string, ctx context.Context) (User, error) {
+	var u User
+
+	err := r.Db.QueryRow(
+		ctx,
+		"SELECT user_id, username, password, email FROM users WHERE email=$1",
+		email,
+	).Scan(&u.Id, &u.Username, &u.Password, &u.Email)
+
+	return u, err
+}
+
 func (r *Repository) Insert(user User, ctx context.Context) (error) {
 	_, err := r.Db.Exec(
 		ctx,
@@ -46,6 +58,8 @@ func (r *Repository) Insert(user User, ctx context.Context) (error) {
 
 	return err
 }
+
+
 
 func (r *Repository) Delete(user_id int, ctx context.Context) (error) {
 		result, err := r.Db.Exec(
