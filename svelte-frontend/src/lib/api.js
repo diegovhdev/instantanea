@@ -10,6 +10,7 @@ export async function login(payload) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
@@ -24,6 +25,7 @@ export async function register(payload) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
@@ -35,9 +37,19 @@ export async function register(payload) {
 export async function logout() {
   fetch(`${prefix}/logout`, {
     method: "GET",
+    credentials: "include",
   });
   userState.logged = false;
   userState.username = "";
-  console.log("aa");
   goto("/login");
+}
+
+export async function uploadImage(formData) {
+  const response = await fetch(`${prefix}/upload`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+
+  console.log(await response.text());
 }

@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -14,10 +13,10 @@ type CustomClaims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(user_id int) (string, error) {
+func GenerateToken(user_id string) (string, error) {
 
 	claims := jwt.RegisteredClaims{
-		Subject:   strconv.Itoa(user_id),
+		Subject:   user_id,
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		Issuer:    "instantanea-backend",

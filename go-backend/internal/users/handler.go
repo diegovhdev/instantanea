@@ -90,19 +90,21 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := helpers.GenerateToken(userFound.Id)
+	token, err := helpers.GenerateToken(strconv.Itoa(userFound.Id))
 
 	if err != nil {
 		http.Error(w, "TOKEN GENERATION ERROR", http.StatusInternalServerError)
 		return
 	}
 
+
 	http.SetCookie(w, &http.Cookie{
 		Name: "access_token",
 		Value: token,
 		HttpOnly: true,
-		Secure: true,
 		Path: "/",
+		SameSite: http.SameSiteLaxMode,
+		Secure: true,
 	})
 }
 
@@ -112,6 +114,8 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 		Value: "",
 		Path: "/",
 		MaxAge: -1,
+		Secure: true,
+		SameSite: http.SameSiteLaxMode,
 		HttpOnly: true,
 	})
 }
