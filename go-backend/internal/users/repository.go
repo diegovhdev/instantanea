@@ -18,7 +18,7 @@ func (r *Repository) Find(user_id int, ctx context.Context) (User, error) {
 		ctx,
 		"SELECT user_id, username, password, email FROM users WHERE user_id=$1",
 		user_id,
-	).Scan(&u.Id, &u.Username, &u.Password, &u.Email)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email)
 
 	return u, err
 }
@@ -30,7 +30,7 @@ func (r *Repository) FindByUsername(username string, ctx context.Context) (User,
 		ctx,
 		"SELECT user_id, username, password, email FROM users WHERE username=$1",
 		username,
-	).Scan(&u.Id, &u.Username, &u.Password, &u.Email)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email)
 
 	return u, err
 }
@@ -42,7 +42,7 @@ func (r *Repository) FindByEmail(email string, ctx context.Context) (User, error
 		ctx,
 		"SELECT user_id, username, password, email FROM users WHERE email=$1",
 		email,
-	).Scan(&u.Id, &u.Username, &u.Password, &u.Email)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email)
 
 	return u, err
 }

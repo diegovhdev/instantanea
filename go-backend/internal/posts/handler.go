@@ -1,10 +1,8 @@
 package posts
 
 import (
-	"context"
 	"instantanea/internal/middlewares"
 	"net/http"
-	"os"
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
@@ -13,51 +11,49 @@ import (
 
 type Handler struct {
 	*Repository
-	Validator *validator.Validate
+	Validator  *validator.Validate
+    Cloudinary *cloudinary.Cloudinary
 }
 
 func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
-    r.ParseMultipartForm(10 << 20)
 
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		http.Error(w, "Error al procesar formulario", http.StatusBadRequest)
+		return
+	}
 
-    file, _, err := r.FormFile("image") // "image" = nombre del campo del frontend
-    if err != nil {
-        http.Error(w, "Error al leer el archivo", http.StatusBadRequest)
-        return
-    }
-    defer file.Close()
+	file, _, err := r.FormFile("image")
+	if err != nil {
+		http.Error(w, "Error al leer el archivo", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
 
+	result, err := h.Cloudinary.Upload.Upload(r.Context(), file, uploader.UploadParams{})
+	if err != nil {
+		http.Error(w, "Error al subir a Cloudinary", http.StatusInternalServerError)
+		return
+	}
 
-    cld, err := cloudinary.NewFromParams(
-        os.Getenv("CLOUDINARY_CLOUD_NAME"),
-        os.Getenv("CLOUDINARY_API_KEY"),
-        os.Getenv("CLOUDINARY_API_SECRET"),
-    )
-    if err != nil {
-        http.Error(w, "Error al conectar con Cloudinary", http.StatusInternalServerError)
-        return
-    }
-
-    ctx := context.Background()
-    result, err := cld.Upload.Upload(ctx, file, uploader.UploadParams{
-    })
-
-    if err != nil {
-        http.Error(w, "Error al subir a Cloudinary", http.StatusInternalServerError)
-        return
-    }
+	userID, ok := r.Context().Value("UserID").(int)
+	if !ok {
+		http.Error(w, "Usuario no autenticado", http.StatusUnauthorized)
+		return
+	}
 
 	post := Post{
 		Text: r.FormValue("text"),
-		UserId: r.Context().Value("UserID").(int),
+		UserId: userID,
 		Url: result.SecureURL,
 		PublicId: result.PublicID,
 	}
 
 	if err := h.Insert(post, r.Context()); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
+		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 

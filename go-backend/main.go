@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/go-playground/validator/v10"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -43,10 +44,17 @@ func main() {
 		Validator: validate,
 	}
 
+	cld, _ := cloudinary.NewFromParams(
+    	os.Getenv("CLOUDINARY_CLOUD_NAME"),
+    	os.Getenv("CLOUDINARY_API_KEY"),
+    	os.Getenv("CLOUDINARY_API_SECRET"),
+	)
+
 	handlePost := posts.Handler{
 		Repository: &posts.Repository{
 			Db: pool,
 		},
+		Cloudinary: cld,
 		Validator: validate,
 	}
 

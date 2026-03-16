@@ -90,7 +90,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := helpers.GenerateToken(strconv.Itoa(userFound.Id))
+	token, err := helpers.GenerateToken(strconv.Itoa(userFound.UserId))
 
 	if err != nil {
 		http.Error(w, "TOKEN GENERATION ERROR", http.StatusInternalServerError)

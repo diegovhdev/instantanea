@@ -51,5 +51,8 @@ export async function uploadImage(formData) {
     credentials: "include",
   });
 
-  console.log(await response.text());
+  if (response.status === 401) {
+    userState.logged = false;
+    goto("/login");
+  }
 }
