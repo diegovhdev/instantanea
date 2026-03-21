@@ -1,8 +1,7 @@
 <script>
-  const {size = "80%"} = $props()
 </script>
 
-<div style:height={size}>
+<div>
 </div>
 
 <style>
@@ -10,6 +9,7 @@
     border-radius: 50%;
     border: var(--border-width, 5px) solid var(--color-theme, gray);
     border-bottom-color: transparent;
+    height: 100%;
     aspect-ratio: 1;
     animation: spin 1s linear infinite;
   }

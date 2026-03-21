@@ -34,12 +34,16 @@
 </script>
 
 <div>
-  <h3 class="text-red-500" class:invisible >{errorMessage}</h3>
+  <h3 class:invisible >{errorMessage}</h3>
   <Form textTitle="Iniciar Sesión" textButton="Entrar" {fieldsVals} callback={login} {onError} {onSuccess}/>
 </div>
 
 <style>
   .invisible {
     opacity: 0;
+  }
+
+  h3 {
+    color: #fb2c36
   }
 </style>

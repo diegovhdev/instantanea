@@ -1,17 +1,36 @@
 <script>
 </script>
 
-<nav class="flex justify-between p-4 bg-gray-900 text-white">
-  <h1 class="font-semibold text-2xl">Instantanea 📸</h1>
-  <div class="flex gap-5">
-    <a href="/login" class="font-semibold">Iniciar Sesión</a>
-    <a href="/register" class="font-semibold">Registrarse</a>
+<nav>
+  <h1>Instantanea 📸</h1>
+  <div>
+    <a href="/login">Iniciar Sesión</a>
+    <a href="/register">Registrarse</a>
   </div>
 </nav>
 
 <style>
   nav {
-    place-self: stretch;
     align-items: center;
+    background-color: #101828;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    place-self: stretch;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  div {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  a {
+    font-weight: 600;
   }
 </style>

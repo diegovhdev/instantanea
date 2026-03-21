@@ -4,12 +4,12 @@
 
 </script>
 
-<nav class="flex justify-between p-4 bg-gray-900 text-white">
-  <h1 class="font-semibold text-2xl">Instantanea 📸</h1>
-  <div class="flex justify-between gap-6">
-    <h1 class="text-xl mt-2 font-semibold">{userState.username}</h1>
-    <a href="/upload" class="font-semibold bg-gray-200 p-2 rounded-xl border-2 hover:bg-gray-300 text-black">Publicar</a>
-    <div class="h-10 w-43 flex justify-between bg-gray-700 rounded-xl p-2 hover:bg-gray-900">
+<nav>
+  <h1>Instantanea 📸</h1>
+  <div>
+    <h1>{userState.username}</h1>
+    <a href="/upload">Publicar</a>
+    <div>
       <button class="font-semibold" onclick={logout}>Cerrar Sesión</button>
       <img src="/logout-icon.svg" alt="logout icon">
     </div>
@@ -19,12 +19,61 @@
 <style>
 
   nav {
-    place-self: stretch;
     align-items: center;
+    background-color: #101828;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    place-self: stretch;
   }
 
-  div {
-    align-items: middle;
+  nav > h1 {
+    font-weight: 600;
+    font-size: 1.5rem;
   }
+
+  nav > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  nav > div > h1 {
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
+  }
+
+  nav > div > a {
+    font-weight: 600;
+    background-color: #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    border-width: 2px;
+    color: #000;
+  }
+
+   nav > div > a:hover {
+    background-color: #d1d5dc;
+   }
+
+   nav > div > div {
+    background-color: #364153;
+    border-radius: 12px;
+    display: flex;
+    height: 2.5rem;
+    justify-content: space-between;
+    padding: 0.5rem;
+    width: 10.75rem;
+   }
+
+   nav > div > div:hover {
+    background-color: #101828;
+   }
+
+   button {
+    font-weight: 600;
+   }
 
 </style>

@@ -56,3 +56,16 @@ export async function uploadImage(formData) {
     goto("/login");
   }
 }
+
+export async function feed(payload) {
+  const response = await fetch(`${prefix}/feed`, {
+    method: "GET",
+    body: payload,
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    userState.logged = false;
+    goto("/login");
+  }
+}
