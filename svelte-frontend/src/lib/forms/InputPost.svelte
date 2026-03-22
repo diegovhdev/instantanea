@@ -1,6 +1,6 @@
 <script>
-  import { uploadImage } from "./api";
-  import Spinner from "./Spinner.svelte"
+  import { uploadImage } from "$lib/services/api";
+  import Spinner from "$lib/components/Spinner.svelte"
 
   let text = $state("")
   let files = $state()

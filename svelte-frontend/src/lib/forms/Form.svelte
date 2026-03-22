@@ -1,6 +1,6 @@
 <script>
   import InputField from "./InputField.svelte";
-  import Spinner from "./Spinner.svelte";
+  import Spinner from "$lib/components/Spinner.svelte";
 
 let {textButton, textTitle, fieldsVals, callback, onError, onSuccess} = $props()
 

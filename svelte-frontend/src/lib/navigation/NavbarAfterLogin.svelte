@@ -1,6 +1,6 @@
 <script>
-  import { logout } from "./api";
-  import { userState } from "./global-state.svelte";
+  import { logout } from "$lib/services/api";
+  import { userState } from "$lib/stores/global-state.svelte";
 
 </script>
 

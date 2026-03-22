@@ -1,5 +1,5 @@
 import { redirect } from "@sveltejs/kit";
-import { userState } from "./global-state.svelte";
+import { userState } from "$lib/stores/global-state.svelte";
 import { goto } from "$app/navigation";
 
 const prefix = "http://localhost:8080";

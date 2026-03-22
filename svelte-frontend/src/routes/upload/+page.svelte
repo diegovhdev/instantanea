@@ -1,5 +1,5 @@
 <script>
-  import InputPost from "$lib/InputPost.svelte";
+  import InputPost from "$lib/forms/InputPost.svelte";
 
 
 </script>

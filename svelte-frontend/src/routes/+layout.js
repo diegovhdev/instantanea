@@ -1,5 +1,5 @@
 import { page } from "$app/state";
-import { userState } from "$lib/global-state.svelte";
+import { userState } from "$lib/stores/global-state.svelte.js";
 import { redirect } from "@sveltejs/kit";
 
 export const ssr = false;

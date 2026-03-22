@@ -1,7 +1,7 @@
 <script>
   import { goto } from "$app/navigation";
-  import { register } from "$lib/api";
-  import Form from "$lib/Form.svelte";
+  import { register } from "$lib/services/api";
+  import Form from "$lib/forms/Form.svelte";
 
   let errorMessage = $state("e")
   let invisible = $derived(errorMessage.trim() === "e")

@@ -1,8 +1,8 @@
 <script>
   import { goto } from "$app/navigation";
-  import { login } from "$lib/api";
-  import Form from "$lib/Form.svelte";
-  import { userState } from "$lib/global-state.svelte";
+  import { login } from "$lib/services/api";
+  import Form from "$lib/forms/Form.svelte";
+  import { userState } from "$lib/stores/global-state.svelte";
 
   let errorMessage = $state("e")
   let invisible = $derived(errorMessage.trim() === "e")
