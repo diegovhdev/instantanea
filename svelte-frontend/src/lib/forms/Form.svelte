@@ -1,19 +1,20 @@
 <script>
   import InputField from "./InputField.svelte";
   import Spinner from "$lib/components/Spinner.svelte";
+  import ButtonLoader from "$lib/components/ButtonLoader.svelte";
 
 let {textButton, textTitle, fieldsVals, callback, onError, onSuccess} = $props()
 
 let fields = $state(fieldsVals)
 let buttonWidth = $state(0)
 let buttonHeight = $state(0)
-let initSpinner = $state(false)
+let spin = $state(false)
 
 const clearForm = () => {
   for (const field of fields) {
     field.value = ""
   }
-  initSpinner = false
+  spin = false
 }
 
 const handleSubmit = async (e) => {
@@ -22,7 +23,7 @@ const handleSubmit = async (e) => {
   for (const field of fields) {
     payload[field.name] = field.value
   }
-  initSpinner = true
+  spin = true
   try {
     await callback(payload)
     onSuccess(payload)
@@ -39,17 +40,7 @@ const handleSubmit = async (e) => {
   {#each fields as field (field.name)}
   <InputField label={field.label} bind:value={field.value} type={field.type}/>
   {/each}
-  <button bind:clientWidth={buttonWidth} bind:clientHeight={buttonHeight} 
-    style:width={buttonWidth !== 0 ? `${buttonWidth}px` : "auto"}
-    style:height={buttonHeight !== 0 ? `${buttonHeight}px` : "auto"}>
-    {#if initSpinner}
-      <Spinner --color-theme="white"/>
-    {:else}
-    <span>
-      {textButton}
-    </span>
-    {/if}
-  </button>
+  <ButtonLoader {spin} width="4.2rem" height="2.5rem">{textButton}</ButtonLoader>
 </form>
 
 <style>

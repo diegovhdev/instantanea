@@ -1,30 +1,28 @@
 <script>
 </script>
 
-<div>
+<div class="loader">
 </div>
 
 <style>
-  div {
-    border-radius: 50%;
-    border: var(--border-width, 5px) solid var(--color-theme, gray);
-    border-bottom-color: transparent;
+
+
+  .loader {
     height: 100%;
     aspect-ratio: 1;
-    animation: spin 1s linear infinite;
-  }
-
-  div {
-    place-self: center;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
+    border: var(--border-width, 5px) solid var(--color-theme, gray);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
     }
-  }
 
-  span {
-    opacity: 0;
-  }
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 
+
 </style>
