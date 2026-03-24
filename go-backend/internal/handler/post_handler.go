@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"instantanea/internal/middleware"
 	"instantanea/internal/service"
 	"net/http"
 	"strconv"
@@ -13,6 +12,7 @@ import (
 type PostHandler struct {
 	Service    *service.PostService
 	Validator  *validator.Validate
+	middleware  Middleware
 }
 
 func (h *PostHandler) Post(w http.ResponseWriter, r *http.Request) {
@@ -91,13 +91,14 @@ func (h *PostHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 
 
 func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
-	mux.Handle("POST /posts", middleware.Auth(h.Post))
-	mux.Handle("GET /posts", middleware.Auth(h.ListPosts))
+	mux.Handle("POST /posts", h.middleware.HandlerFunc((h.Post)))
+	mux.Handle("GET /posts", h.middleware.HandlerFunc((h.ListPosts)))
 }
 
-func NewPostHandler(service *service.PostService, validator *validator.Validate) PostHandler {
+func NewPostHandler(service *service.PostService, validator *validator.Validate, middleware Middleware) PostHandler {
 	return PostHandler{
 		Service: service,
 		Validator: validator,
+		middleware: middleware,
 	}
 }

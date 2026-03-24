@@ -1,22 +1,19 @@
 package service
 
 import (
+	"os"
 	"time"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = []byte("EL mencho se lo merecia")
+var secretKey = []byte(os.Getenv("SECRET_KEY"))
 
-type CustomClaims struct {
-	Role string `json:"role"`
-	jwt.RegisteredClaims
-}
-
-func GenerateToken(user_id string) (string, error) {
+func GenerateToken(userId string) (string, error) {
 
 	claims := jwt.RegisteredClaims{
-		Subject:   user_id,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
+		Subject:   userId,
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		Issuer:    "instantanea-backend",
 	}

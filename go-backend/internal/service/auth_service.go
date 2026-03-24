@@ -16,11 +16,11 @@ var ErrUserNotFound = errors.New("usuario no encontrado")
 var ErrIncorrectPassword = errors.New("contraseña incorrecta")
 var ErrTokenGeneration = errors.New("error en la generación del token")
 
-type UserService struct {
+type AuthService struct {
 	Repository *repository.UserRepository
 }
 
-func (s *UserService) Register(ctx context.Context, user model.User) error {
+func (s *AuthService) Register(ctx context.Context, user model.UserRegisterRequest) error {
 
 	if _, err := s.Repository.FindByUsername(ctx, user.Username); err == nil {
 		return ErrUsernameAlreadyExists
@@ -38,14 +38,14 @@ func (s *UserService) Register(ctx context.Context, user model.User) error {
 
 	user.Password = hashedPassword
 
-	if err := s.Repository.Insert(ctx, user); err != nil {
+	if err := s.Repository.Insert(ctx, user.ToUser()); err != nil {
 		return ErrInternal
 	}
 
 	return nil
 }
 
-func (s *UserService) Login(ctx context.Context, user model.UserRequest) (string, error) {
+func (s *AuthService) Login(ctx context.Context, user model.UserLoginRequest) (string, error) {
 
 	userFound, err := s.Repository.FindByUsername(ctx, user.Username)
 
@@ -66,8 +66,8 @@ func (s *UserService) Login(ctx context.Context, user model.UserRequest) (string
 	return token, nil
 }
 
-func NewUserService(repository *repository.UserRepository) *UserService {
-	return &UserService{
+func NewAuthService(repository *repository.UserRepository) *AuthService {
+	return &AuthService{
 		Repository: repository,
 	}
 }

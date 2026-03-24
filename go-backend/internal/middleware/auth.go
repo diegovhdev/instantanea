@@ -2,13 +2,14 @@ package middleware
 
 import (
 	"context"
+	"instantanea/internal/handler"
 	"instantanea/internal/service"
 	"net/http"
 	"strconv"
 )
 
 
-func Auth(next http.HandlerFunc) http.Handler {
+func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("access_token")
 
@@ -26,7 +27,17 @@ func Auth(next http.HandlerFunc) http.Handler {
 			return
 		}
 
+		token, err := service.GenerateToken(claims.Subject)
+
+		if err != nil {
+			http.Error(w, "Error interno al refrescar el token", http.StatusInternalServerError)
+			return
+		}
+
+		handler.SetCookie(w, "access_token", token)
+
 		userId, _ := strconv.Atoi(claims.Subject)
+
 
 		ctx := context.WithValue(r.Context(), "UserID", userId)
 		r = r.WithContext(ctx)

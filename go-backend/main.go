@@ -30,7 +30,19 @@ func main() {
 
 	connString := os.Getenv("DATABASE_STRING")
 
+	
+	
 	pool, err := pgxpool.New(ctx, connString)
+	
+	if err != nil {
+		panic(err)
+	}
+	
+	cdl, err := cloudinary.NewFromParams(
+		os.Getenv("CLOUDINARY_CLOUD_NAME"),
+		os.Getenv("CLOUDINARY_API_KEY"),
+		os.Getenv("CLOUDINARY_API_SECRET"),
+	)
 
 	if err != nil {
 		panic(err)
@@ -38,22 +50,24 @@ func main() {
 
 	validate := validator.New()
 
-	userHandler := handler.NewUserHanler(service.NewUserService(&repository.UserRepository{Db: pool}), validate)
-
-	cld, _ := cloudinary.NewFromParams(
-    	os.Getenv("CLOUDINARY_CLOUD_NAME"),
-    	os.Getenv("CLOUDINARY_API_KEY"),
-    	os.Getenv("CLOUDINARY_API_SECRET"),
+	userHandler := handler.NewAuthHanler(
+		service.NewAuthService(&repository.UserRepository{Db: pool}), 
+		validate,
+		middleware.Auth,
 	)
 
-	postHandler := handler.NewPostHandler(service.NewPostService(&repository.PostRepository{Db: pool}, cld), validate)
+	postHandler := handler.NewPostHandler(
+		service.NewPostService(&repository.PostRepository{Db: pool}, service.NewCloudinaryUploader(cdl)), 
+		validate,
+		middleware.Auth,
+	)
 
 	mux := http.NewServeMux()
 
 	userHandler.RegisterRoutes(mux)
 	postHandler.RegisterRoutes(mux)
 
-	fmt.Println("Inicio el servidor")
+	fmt.Println("Inicio el servidor en el puerto :8080")
 
 	err = http.ListenAndServe(":8080", middleware.CORS(mux))
 	log.Fatal(err)

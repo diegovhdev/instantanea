@@ -1,7 +1,6 @@
 <script>
   import Spinner from "./Spinner.svelte";
   let {children, spin, width="auto", height="auto"} = $props();
-  console.log("Hola")
 </script>
 
 <button style:width style:height style:padding={spin ? "0.3rem" : "0.5rem"}>

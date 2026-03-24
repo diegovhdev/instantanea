@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"instantanea/internal/middleware"
 	"instantanea/internal/model"
 	"instantanea/internal/service"
 	"net/http"
@@ -9,15 +8,17 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type UserHandler struct {
-	Service   *service.UserService
+type AuthHandler struct {
+	Service   *service.AuthService
 	Validator *validator.Validate
+	middleware Middleware
 }
 
 
-func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
+func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
-	user, err := ValidateJSON[model.User](r.Body, h.Validator)
+
+	user, err := ValidateJSON[model.UserRegisterRequest](r.Body, h.Validator)
 
 	if err != nil {
 		http.Error(w, "las validaciones para los inputs fallaron", http.StatusBadRequest)
@@ -41,9 +42,9 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
-	user, err := ValidateJSON[model.UserRequest](r.Body, h.Validator)
+	user, err := ValidateJSON[model.UserLoginRequest](r.Body, h.Validator)
 
 	if err != nil {
 		http.Error(w, "las validaciones para los inputs fallaron", http.StatusBadRequest)
@@ -62,34 +63,21 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	}
 
-	http.SetCookie(w, &http.Cookie{
-		Name: "access_token",
-		Value: token,
-		HttpOnly: true,
-		Path: "/",
-		SameSite: http.SameSiteLaxMode,
-		Secure: true,
-	})
+	SetCookie(w, "access_token", token)
 
 	w.WriteHeader(http.StatusOK)
 }
 
-func (h *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	http.SetCookie(w, &http.Cookie{
-		Name: "access_token",
-		Value: "",
-		Path: "/",
-		MaxAge: -1,
-		Secure: true,
-		SameSite: http.SameSiteLaxMode,
-		HttpOnly: true,
-	})
+func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	RemoveCookie(w, "access_token")
+	w.WriteHeader(http.StatusOK)
 }
 
-func (h *UserHandler) Test(w http.ResponseWriter, r *http.Request) {
+func (h *AuthHandler) Test(w http.ResponseWriter, r *http.Request) {
 	a := struct{
 		Message string `json:"message"`
 	}{"Aceddiste a la ruta protegida"}
@@ -97,16 +85,17 @@ func (h *UserHandler) Test(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, a)
 }
 
-func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
-	mux.Handle("POST /register", http.HandlerFunc(h.Register))
-	mux.Handle("POST /login", http.HandlerFunc(h.Login))
-	mux.Handle("GET /logout", middleware.Auth(h.Logout))
-	mux.Handle("GET /test", middleware.Auth(h.Test))
+func (h *AuthHandler) RegisterRoutes(mux *http.ServeMux) {
+	mux.Handle("POST /auth/register", http.HandlerFunc(h.Register))
+	mux.Handle("POST /auth/login", http.HandlerFunc(h.Login))
+	mux.Handle("GET /auth/logout", http.HandlerFunc(h.Logout))
+	mux.Handle("GET /test", h.middleware.HandlerFunc((h.Test)))
 }
 
-func NewUserHanler(service *service.UserService, validator *validator.Validate) UserHandler {
-	return UserHandler{
+func NewAuthHanler(service *service.AuthService, validator *validator.Validate, middleware Middleware) AuthHandler {
+	return AuthHandler{
 		Service: service,
 		Validator: validator,
+		middleware: middleware,
 	}
 }

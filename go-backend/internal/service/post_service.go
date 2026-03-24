@@ -6,9 +6,6 @@ import (
 	"instantanea/internal/model"
 	"instantanea/internal/repository"
 	"mime/multipart"
-
-	"github.com/cloudinary/cloudinary-go/v2"
-	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
 var ErrUploadingImage = errors.New("error al subir la imagen")
@@ -18,13 +15,13 @@ var ErrNoContent = errors.New("No hay más contenido")
 
 type PostService struct {
 	Repository *repository.PostRepository
-	Cloudinary *cloudinary.Cloudinary
+	uploader Uploader
 }
 
 
 func (s *PostService) Post(ctx context.Context, text string, file multipart.File) error {
 
-	result, err := s.Cloudinary.Upload.Upload(ctx, file, uploader.UploadParams{})
+	url, publicId, err := s.uploader.Upload(ctx, file)
 	if err != nil {
 		return ErrUploadingImage
 	}
@@ -37,8 +34,8 @@ func (s *PostService) Post(ctx context.Context, text string, file multipart.File
 	post := model.Post{
 		Text: text,
 		UserId: userID,
-		Url: result.SecureURL,
-		PublicId: result.PublicID,
+		Url: url,
+		PublicId: publicId,
 	}
 
 	if err := s.Repository.Insert(ctx, post); err != nil {
@@ -61,9 +58,9 @@ func (s *PostService) GetPosts(ctx context.Context, limit, offset int) ([]model.
 }
 
 
-func NewPostService(repository *repository.PostRepository, clodinary *cloudinary.Cloudinary) *PostService {
+func NewPostService(repository *repository.PostRepository, uploader Uploader) *PostService {
 	return &PostService{
 		Repository: repository,
-		Cloudinary: clodinary,
+		uploader: uploader,
 	}
 }

@@ -5,7 +5,7 @@ import { goto } from "$app/navigation";
 const prefix = "http://localhost:8080";
 
 export async function login(payload) {
-  const response = await fetch(`${prefix}/login`, {
+  const response = await fetch(`${prefix}/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,7 +20,7 @@ export async function login(payload) {
 }
 
 export async function register(payload) {
-  const response = await fetch(`${prefix}/register`, {
+  const response = await fetch(`${prefix}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +35,7 @@ export async function register(payload) {
 }
 
 export async function logout() {
-  fetch(`${prefix}/logout`, {
+  fetch(`${prefix}/auth/logout`, {
     method: "GET",
     credentials: "include",
   });
