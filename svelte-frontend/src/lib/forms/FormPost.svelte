@@ -1,5 +1,5 @@
 <script>
-  import { uploadImage } from "$lib/services/api";
+  import { post } from "$lib/services/api";
   import Spinner from "$lib/components/Spinner.svelte"
   import ButtonLoader from "$lib/components/ButtonLoader.svelte";
 
@@ -24,7 +24,7 @@
     const formData = new FormData();
     formData.append("image", files[0])
     formData.append("text", text)
-    await uploadImage(formData)
+    await post(formData)
     clear()
   }
 
@@ -34,7 +34,7 @@
 <form onsubmit={handleSubmit}>
   <textarea maxlength="255" name="text" id="post" bind:value={text} placeholder="Escribe aca..."></textarea>
   <label for="image-upload" id="image-label">Subir imagen ↑</label>
-  <input type="file" accept="image/png, image/jpeg" name="image-upload" id="image-upload" class="inputfile" bind:files>
+  <input type="file" accept="image/png, image/jpeg" name="image-upload" id="image-upload" class="inputfile" bind:files required>
   {#if imageURL !== ""}
     <img src={imageURL} alt="">
   {/if}

@@ -1,29 +1,29 @@
-package posts
+package handler
 
 import (
 	"encoding/json"
-	"instantanea/internal/middlewares"
+	"instantanea/internal/middleware"
+	"instantanea/internal/service"
 	"net/http"
 	"strconv"
 
-	"github.com/cloudinary/cloudinary-go/v2"
-	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-playground/validator/v10"
 )
 
-type Handler struct {
-	*Repository
+type PostHandler struct {
+	Service    *service.PostService
 	Validator  *validator.Validate
-    Cloudinary *cloudinary.Cloudinary
 }
 
-func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
+func (h *PostHandler) Post(w http.ResponseWriter, r *http.Request) {
+
 
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		http.Error(w, "Error al procesar formulario", http.StatusBadRequest)
 		return
 	}
 
+	text := r.FormValue("text")
 	file, _, err := r.FormFile("image")
 	if err != nil {
 		http.Error(w, "Error al leer el archivo", http.StatusBadRequest)
@@ -31,34 +31,26 @@ func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	result, err := h.Cloudinary.Upload.Upload(r.Context(), file, uploader.UploadParams{})
+	err = h.Service.Post(r.Context(), text, file)
+
 	if err != nil {
-		http.Error(w, "Error al subir a Cloudinary", http.StatusInternalServerError)
-		return
-	}
-
-	userID, ok := r.Context().Value("UserID").(int)
-	if !ok {
-		http.Error(w, "Usuario no autenticado", http.StatusUnauthorized)
-		return
-	}
-
-	post := Post{
-		Text: r.FormValue("text"),
-		UserId: userID,
-		Url: result.SecureURL,
-		PublicId: result.PublicID,
-	}
-
-	if err := h.Insert(post, r.Context()); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		switch err {
+		case service.ErrUploadingImage, service.ErrUploadingImage:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		case service.ErrUnauthenticatedUser:
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		default:
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (h *Handler) Feed(w http.ResponseWriter, r *http.Request) {
+func (h *PostHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 	limitStr := r.URL.Query().Get("limit")
 	offsetStr := r.URL.Query().Get("offset")
 
@@ -82,7 +74,7 @@ func (h *Handler) Feed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := h.GetMany(limit, offset, r.Context())
+	posts, err := h.Service.GetPosts(r.Context(), limit, offset)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -98,7 +90,14 @@ func (h *Handler) Feed(w http.ResponseWriter, r *http.Request) {
 }
 
 
-func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.Handle("POST /upload", middlewares.Auth(http.HandlerFunc(h.Upload)))
-	mux.Handle("GET /feed", http.HandlerFunc(h.Feed))
+func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
+	mux.Handle("POST /posts", middleware.Auth(h.Post))
+	mux.Handle("GET /posts", middleware.Auth(h.ListPosts))
+}
+
+func NewPostHandler(service *service.PostService, validator *validator.Validate) PostHandler {
+	return PostHandler{
+		Service: service,
+		Validator: validator,
+	}
 }

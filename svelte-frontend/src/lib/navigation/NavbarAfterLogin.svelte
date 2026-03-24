@@ -20,7 +20,7 @@
 
   nav {
     align-items: center;
-    background-color: #101828;
+    background-color: var(--background-color-primary);
     color: #fff;
     display: flex;
     justify-content: space-between;
@@ -69,7 +69,7 @@
    }
 
    nav > div > div:hover {
-    background-color: #101828;
+    background-color: var(--background-color-primary);
    }
 
    button {

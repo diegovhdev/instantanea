@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"instantanea/internal/middlewares"
-	"instantanea/internal/posts"
-	"instantanea/internal/users"
+	"instantanea/internal/handler"
+	"instantanea/internal/middleware"
+	"instantanea/internal/repository"
+	"instantanea/internal/service"
 	"log"
 	"net/http"
 	"os"
@@ -37,12 +38,7 @@ func main() {
 
 	validate := validator.New()
 
-	handleUser := users.Handler{
-		Repository: &users.Repository{
-			Db: pool,
-		},
-		Validator: validate,
-	}
+	userHandler := handler.NewUserHanler(service.NewUserService(&repository.UserRepository{Db: pool}), validate)
 
 	cld, _ := cloudinary.NewFromParams(
     	os.Getenv("CLOUDINARY_CLOUD_NAME"),
@@ -50,21 +46,15 @@ func main() {
     	os.Getenv("CLOUDINARY_API_SECRET"),
 	)
 
-	handlePost := posts.Handler{
-		Repository: &posts.Repository{
-			Db: pool,
-		},
-		Cloudinary: cld,
-		Validator: validate,
-	}
+	postHandler := handler.NewPostHandler(service.NewPostService(&repository.PostRepository{Db: pool}, cld), validate)
 
 	mux := http.NewServeMux()
 
-	handleUser.RegisterRoutes(mux)
-	handlePost.RegisterRoutes(mux)
+	userHandler.RegisterRoutes(mux)
+	postHandler.RegisterRoutes(mux)
 
 	fmt.Println("Inicio el servidor")
 
-	err = http.ListenAndServe(":8080", middlewares.CORS(mux))
+	err = http.ListenAndServe(":8080", middleware.CORS(mux))
 	log.Fatal(err)
 }

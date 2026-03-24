@@ -44,8 +44,8 @@ export async function logout() {
   goto("/login");
 }
 
-export async function uploadImage(formData) {
-  const response = await fetch(`${prefix}/upload`, {
+export async function post(formData) {
+  const response = await fetch(`${prefix}/posts`, {
     method: "POST",
     body: formData,
     credentials: "include",

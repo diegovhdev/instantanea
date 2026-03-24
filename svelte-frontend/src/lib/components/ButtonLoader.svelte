@@ -17,7 +17,7 @@
   button {
     display: flex;
     align-items: center;
-    background-color: #364153;
+    background-color: var(--background-color-secondary);
     border-radius: 12px;
     color: #fff;
     font-size: 1.1rem;
@@ -27,6 +27,6 @@
   }
 
   button:hover {
-    background-color: #101828;
+    background-color: var(--background-color-primary);
   }
 </style>

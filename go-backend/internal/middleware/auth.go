@@ -1,25 +1,25 @@
-package middlewares
+package middleware
 
 import (
 	"context"
-	"instantanea/internal/helpers"
+	"instantanea/internal/service"
 	"net/http"
 	"strconv"
 )
 
 
-func Auth(next http.Handler) http.Handler {
+func Auth(next http.HandlerFunc) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("access_token")
 
 		if err != nil {
-			http.Error(w, "JWT REQUIRED1", http.StatusUnauthorized)
+			http.Error(w, "JWT REQUIRED", http.StatusUnauthorized)
 			return
 		}
 
 		tokenString := cookie.Value
 
-		claims, err := helpers.ValidateToken(tokenString)
+		claims, err := service.ValidateToken(tokenString)
 
 		if err != nil {
 			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
