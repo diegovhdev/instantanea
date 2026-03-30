@@ -1,7 +1,8 @@
 <script>
   import { post } from "$lib/services/api";
   import Spinner from "$lib/components/Spinner.svelte"
-  import ButtonLoader from "$lib/components/ButtonLoader.svelte";
+  import ButtonLoader from "$lib/components/LoadingButton.svelte";
+  import LoadingButton from "$lib/components/LoadingButton.svelte";
 
   let text = $state("")
   let files = $state()
@@ -9,18 +10,18 @@
 
   let spinnerWidth = $state(0)
   let spinnerHeight = $state()
-  let spin = $state(false)
+  let loading = $state(false)
 
 
   function clear() {
-    spin = false
+    loading = false
     files = undefined
     text = ""
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
-    spin = true
+    loading = true
     const formData = new FormData();
     formData.append("image", files[0])
     formData.append("text", text)
@@ -38,7 +39,7 @@
   {#if imageURL !== ""}
     <img src={imageURL} alt="">
   {/if}
-  <ButtonLoader {spin} width="6rem" height="2.5rem">Publicar</ButtonLoader>
+  <LoadingButton {loading}>Publicar</LoadingButton>
 </form>
 
 <style>
@@ -54,15 +55,16 @@
   }
 
   label {
-    background-color: #e5e7eb;
+    background-color: var(--color-secondary);
     border-radius: 8px;
     border-width: 2px;
+    border-color: var(--color-border-focus);
     font-weight: 600;
     padding: 8px;
   }
 
   label:hover {
-    background-color: #d1d5dc;
+    background-color: var(--color-secondary-hover);
   }
 
   .inputfile {

@@ -1,7 +1,7 @@
 <script>
-  import InputPost from "$lib/forms/FormPost.svelte";
+  import PostForm from "$lib/features/PostForm.svelte";
 
 
 </script>
 
-<InputPost />
+<PostForm />

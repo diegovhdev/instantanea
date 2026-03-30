@@ -12,8 +12,8 @@
 <style>
   nav {
     align-items: center;
-    background-color: var(--background-color-primary);
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
     display: flex;
     justify-content: space-between;
     padding: 1rem;

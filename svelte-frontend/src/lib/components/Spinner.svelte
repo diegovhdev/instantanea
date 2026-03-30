@@ -1,20 +1,19 @@
 <script>
+  let {height} = $props()
 </script>
 
-<div class="loader">
+<div class="spinner" style:height={`${height}px`}>
 </div>
 
 <style>
 
-
-  .loader {
-    height: 100%;
+  .spinner {
     aspect-ratio: 1;
-    border: var(--border-width, 5px) solid var(--color-theme, gray);
+    border: var(--border-width, 5px) solid var(--color-secondary, black);
     border-bottom-color: transparent;
     border-radius: 50%;
     animation: rotation 1s linear infinite;
-    }
+  }
 
     @keyframes rotation {
     0% {

@@ -1,7 +1,7 @@
 <script>
   import { goto } from "$app/navigation";
   import { register } from "$lib/services/api";
-  import Form from "$lib/forms/Form.svelte";
+  import RegisterForm from "$lib/features/RegisterForm.svelte";
 
   let errorMessage = $state("e")
   let invisible = $derived(errorMessage.trim() === "e")
@@ -14,30 +14,11 @@
     goto("/login")
   }
 
-  const fieldsVals = [
-    {
-      name: "username",
-      label: "Usuario",
-      value: ""
-    },
-    {
-      name: "email",
-      label: "Correo",
-      value: "",
-      type: "email"
-    },
-    {
-      name: "password",
-      label: "Contraseña",
-      value: "",
-      type: "password"
-    }
-  ]
 </script>
 
 <div>
   <h3 class:invisible >{errorMessage}</h3>
-  <Form textTitle="Registro" textButton="Registrarse" {fieldsVals} callback={register} {onError} {onSuccess}></Form>
+  <RegisterForm callback={register} {onSuccess} {onError}/>
 </div>
 
 <style>
@@ -46,7 +27,7 @@
   }
 
   h3 {
-    color: #fb2c36;
+    color: var(--color-error);
   }
 </style>
 

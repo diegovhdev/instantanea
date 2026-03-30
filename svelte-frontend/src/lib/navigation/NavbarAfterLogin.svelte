@@ -20,8 +20,8 @@
 
   nav {
     align-items: center;
-    background-color: var(--background-color-primary);
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
     display: flex;
     justify-content: space-between;
     padding: 16px;
@@ -47,19 +47,19 @@
 
   nav > div > a {
     font-weight: 600;
-    background-color: #e5e7eb;
+    background-color: var(--color-secondary);
     border-radius: 0.75rem;
     padding: 0.5rem;
     border-width: 2px;
-    color: #000;
+    color: var(--color-primary);
   }
 
    nav > div > a:hover {
-    background-color: #d1d5dc;
+    background-color: var(--color-secondary);
    }
 
    nav > div > div {
-    background-color: #364153;
+    background-color: var(--color-primary-hover);
     border-radius: 12px;
     display: flex;
     height: 2.5rem;
@@ -69,7 +69,7 @@
    }
 
    nav > div > div:hover {
-    background-color: var(--background-color-primary);
+    background-color: var(--color-primary);
    }
 
    button {
