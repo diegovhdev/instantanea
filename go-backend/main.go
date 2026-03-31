@@ -69,6 +69,8 @@ func main() {
 
 	fmt.Println("Inicio el servidor en el puerto :8080")
 
-	err = http.ListenAndServe(":8080", middleware.CORS(mux))
+	wrappper := middleware.Logger(middleware.CORS(mux))
+
+	err = http.ListenAndServe(":8080", wrappper)
 	log.Fatal(err)
 }

@@ -91,8 +91,8 @@ func (h *PostHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 
 
 func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
-	mux.Handle("POST /posts", h.middleware.HandlerFunc((h.Post)))
-	mux.Handle("GET /posts", h.middleware.HandlerFunc((h.ListPosts)))
+	mux.Handle("POST /posts", h.middleware.HandlerFunc(h.Post))
+	mux.Handle("GET /posts", h.middleware.HandlerFunc(h.ListPosts))
 }
 
 func NewPostHandler(service *service.PostService, validator *validator.Validate, middleware Middleware) PostHandler {

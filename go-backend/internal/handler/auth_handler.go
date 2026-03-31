@@ -89,7 +89,7 @@ func (h *AuthHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("POST /auth/register", http.HandlerFunc(h.Register))
 	mux.Handle("POST /auth/login", http.HandlerFunc(h.Login))
 	mux.Handle("GET /auth/logout", http.HandlerFunc(h.Logout))
-	mux.Handle("GET /test", h.middleware.HandlerFunc((h.Test)))
+	mux.Handle("GET /test", h.middleware.HandlerFunc(h.Test))
 }
 
 func NewAuthHanler(service *service.AuthService, validator *validator.Validate, middleware Middleware) AuthHandler {
