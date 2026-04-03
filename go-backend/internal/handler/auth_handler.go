@@ -28,14 +28,8 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	err = h.Service.Register(r.Context(), user)
 
 	if err != nil {
-		switch err {
-		case service.ErrUsernameAlreadyExists, service.ErrUsernameAlreadyExists:
-			http.Error(w, err.Error(), http.StatusConflict)
-			return
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -54,17 +48,8 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	token, err := h.Service.Login(r.Context(), user)
 
 	if err != nil {
-		switch err {
-		case service.ErrUserNotFound:
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
-		case service.ErrIncorrectPassword:
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
 	}
 
 	SetCookie(w, "access_token", token)

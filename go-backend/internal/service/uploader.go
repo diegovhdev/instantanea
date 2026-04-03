@@ -20,7 +20,7 @@ func (u *CloudinaryUploader) Upload(ctx context.Context, file multipart.File) (s
 	result, err := u.Cloudinary.Upload.Upload(ctx, file, uploader.UploadParams{})
 
 	if err != nil {
-		return "", "", ErrUploadingImage
+		return "", "", &CustomError{err, ErrUploadingImage}
 	}
 
 	return result.SecureURL, result.PublicID, nil

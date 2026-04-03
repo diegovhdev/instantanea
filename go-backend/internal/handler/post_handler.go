@@ -34,17 +34,8 @@ func (h *PostHandler) Post(w http.ResponseWriter, r *http.Request) {
 	err = h.Service.Post(r.Context(), text, file)
 
 	if err != nil {
-		switch err {
-		case service.ErrUploadingImage, service.ErrUploadingImage:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		case service.ErrUnauthenticatedUser:
-			http.Error(w, err.Error(), http.StatusUnauthorized)
-			return
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
@@ -76,11 +67,7 @@ func (h *PostHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 
 	posts, err := h.Service.GetPosts(r.Context(), limit, offset)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if len(posts) == 0 {
-		http.Error(w, "No hay más contenido", http.StatusNoContent)
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
 		return
 	}
 

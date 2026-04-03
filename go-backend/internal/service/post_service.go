@@ -2,16 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 	"instantanea/internal/model"
 	"instantanea/internal/repository"
 	"mime/multipart"
 )
-
-var ErrUploadingImage = errors.New("error al subir la imagen")
-var ErrUnauthenticatedUser = errors.New("Usuario no autentificado")
-var ErrInDatabase = errors.New("Hubo un error con la base de datos")
-var ErrNoContent = errors.New("No hay más contenido")
 
 type PostService struct {
 	Repository *repository.PostRepository
@@ -23,12 +17,12 @@ func (s *PostService) Post(ctx context.Context, text string, file multipart.File
 
 	url, publicId, err := s.uploader.Upload(ctx, file)
 	if err != nil {
-		return ErrUploadingImage
+		return err
 	}
 
 	userID, ok := ctx.Value("UserID").(int)
 	if !ok {
-		return ErrUnauthenticatedUser
+		return &CustomError{nil, ErrUnauthenticatedUser}
 	}
 
 	post := model.Post{
@@ -39,7 +33,7 @@ func (s *PostService) Post(ctx context.Context, text string, file multipart.File
 	}
 
 	if err := s.Repository.Insert(ctx, post); err != nil {
-		return ErrInDatabase
+		return &CustomError{err, ErrInDatabase}
 	}
 
 	return nil
@@ -48,10 +42,10 @@ func (s *PostService) Post(ctx context.Context, text string, file multipart.File
 func (s *PostService) GetPosts(ctx context.Context, limit, offset int) ([]model.PostResponse, error) {
 	posts, err := s.Repository.GetMany(ctx, limit, offset)
 	if err != nil {
-		return nil, ErrInDatabase
+		return nil, &CustomError{err, ErrInDatabase}
 	}
 	if len(posts) == 0 {
-		return posts, ErrNoContent
+		return posts, &CustomError{nil, ErrNoContent}
 	}
 
 	return posts, nil
