@@ -17,6 +17,8 @@ export async function login(payload) {
     let message = await response.text();
     throw new Error(message);
   }
+  const data = await response.json();
+  return data;
 }
 
 export async function register(payload) {

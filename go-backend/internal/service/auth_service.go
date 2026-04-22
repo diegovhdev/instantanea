@@ -37,25 +37,25 @@ func (s *AuthService) Register(ctx context.Context, user model.UserRegisterReque
 	return nil
 }
 
-func (s *AuthService) Login(ctx context.Context, user model.UserLoginRequest) (string, error) {
+func (s *AuthService) Login(ctx context.Context, user model.UserLoginRequest) (string, model.UserResponse, error) {
 
 	userFound, err := s.Repository.FindByUsername(ctx, user.Username)
 
 	if err != nil {
-		return "", &CustomError{err, ErrUserNotFound}
+		return "", model.UserResponse{}, &CustomError{err, ErrUserNotFound}
 	}
 
 	if err := CheckPassword(userFound.Password, user.Password); err != nil {
-		return "", &CustomError{err, ErrIncorrectPassword}
+		return "", model.UserResponse{}, &CustomError{err, ErrIncorrectPassword}
 	}
 
 	token, err := GenerateToken(strconv.Itoa(userFound.UserId))
 
 	if err != nil {
-		return "", &CustomError{err, ErrTokenGeneration}
+		return "", model.UserResponse{}, &CustomError{err, ErrTokenGeneration}
 	}
 
-	return token, nil
+	return token, userFound.ToUserResponse(), nil
 }
 
 func NewAuthService(repository *repository.UserRepository) *AuthService {

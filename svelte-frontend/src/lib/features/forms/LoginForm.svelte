@@ -26,8 +26,8 @@
     }
     loading = true
     try {
-      await callback(payload)
-      onSuccess(payload)
+      const data = await callback(payload)
+      onSuccess(data)
     } catch(error) {
       onError(error)
     }
@@ -40,7 +40,9 @@
   <h1>Iniciar Sesión</h1>
   <InputField name="username" bind:value={fields.username}>Usuario:</InputField>
   <InputField name="password" bind:value={fields.password} type="password">Contraseña:</InputField>
-  <LoadingButton {loading}>Entrar</LoadingButton>
+  <div>
+    <LoadingButton {loading}>Entrar</LoadingButton>
+  </div>
 </form>
 
 <style>
@@ -51,6 +53,7 @@
     flex-direction: column;
     gap: 1rem;
     justify-items: center;
+    align-items: center;
     padding: 40px 40px 24px;
   }
 
@@ -64,5 +67,10 @@
 
   h1 {
     align-self: center;
+  }
+
+  div {
+    padding-top: 0.8rem;
+    font-size: 1.1rem;
   }
 </style>

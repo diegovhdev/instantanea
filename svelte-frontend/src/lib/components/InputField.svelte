@@ -13,13 +13,13 @@
   div {
     display: flex;
     flex-direction: column;
-    grid-template-columns: 100px 1fr;
-    color: var(--color-primary-hover)
+    color: var(--color-primary-hover);
+    gap: 0.3rem
   }
 
   div > label {
     display: flex;
-    font-weight: 500;
+    font-weight: 600;
     justify-content: flex-start;
     padding-right: 4px;
   }
@@ -29,6 +29,7 @@
     border: 2px var(--color-border) solid;
     border-radius: 6px;
     padding-left: 6px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
   }
 
   div > input:hover {
@@ -42,6 +43,10 @@
   div > input:focus {
     outline: none;
     border-color: var(--color-border-focus);
+  }
+
+  div > input:hover, div > input:focus {
+    transform: scale(1.07);
   }
 
 </style>

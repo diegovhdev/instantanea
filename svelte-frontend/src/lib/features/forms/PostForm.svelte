@@ -3,6 +3,7 @@
   import Spinner from "$lib/components/Spinner.svelte"
   import ButtonLoader from "$lib/components/LoadingButton.svelte";
   import LoadingButton from "$lib/components/LoadingButton.svelte";
+  import { fade } from "svelte/transition";
 
   let text = $state("")
   let files = $state()
@@ -32,14 +33,16 @@
 
 </script>
 
-<form onsubmit={handleSubmit}>
+<form onsubmit={handleSubmit} in:fade>
   <textarea maxlength="255" name="text" id="post" bind:value={text} placeholder="Escribe aca..."></textarea>
   <label for="image-upload" id="image-label">Subir imagen ↑</label>
   <input type="file" accept="image/png, image/jpeg" name="image-upload" id="image-upload" class="inputfile" bind:files required>
   {#if imageURL !== ""}
     <img src={imageURL} alt="">
   {/if}
-  <LoadingButton {loading}>Publicar</LoadingButton>
+  <div>
+    <LoadingButton {loading}>Publicar</LoadingButton>
+  </div>
 </form>
 
 <style>
@@ -59,8 +62,11 @@
     border-radius: 8px;
     border-width: 2px;
     border-color: var(--color-border-focus);
+    color: var(--color-primary);
+    cursor: pointer;
     font-weight: 600;
     padding: 8px;
+    transition: background-color 0.3s ease;
   }
 
   label:hover {

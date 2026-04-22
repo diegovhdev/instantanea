@@ -44,7 +44,7 @@
     font-weight: 600;
 
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.2s ease, background-color 0.3s ease;
   }
   .btn:hover {
     background-color: var(--color-primary-hover);

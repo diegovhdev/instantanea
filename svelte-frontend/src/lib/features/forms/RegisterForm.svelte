@@ -44,7 +44,9 @@
   <InputField name="username" bind:value={fields.username}>Usuario:</InputField>
   <InputField name="email" bind:value={fields.email} type="email">Correo:</InputField>
   <InputField name="password" bind:value={fields.password} type="password">Contraseña:</InputField>
-  <LoadingButton {loading}>Registrarse</LoadingButton>
+  <div>
+    <LoadingButton {loading}>Registrarse</LoadingButton>
+  </div>
 </form>
 
 <style>
@@ -53,6 +55,7 @@
     border-radius: 16px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
     justify-items: center;
     padding: 40px 40px 24px;
@@ -64,9 +67,12 @@
     color: var(--color-primary);
   }
 
-
-
   h1 {
     align-self: center;
+  }
+
+  div {
+    padding-top: 0.8rem;
+    font-size: 1.1rem;
   }
 </style>

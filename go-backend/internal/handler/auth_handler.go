@@ -45,7 +45,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.Service.Login(r.Context(), user)
+	token, userResponse, err := h.Service.Login(r.Context(), user)
 
 	if err != nil {
 		http.Error(w, err.Error(), GetErrorStatusCode(err))
@@ -54,7 +54,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	SetCookie(w, "access_token", token)
 
-	w.WriteHeader(http.StatusOK)
+	WriteJSON(w, http.StatusOK, userResponse)
 }
 
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {

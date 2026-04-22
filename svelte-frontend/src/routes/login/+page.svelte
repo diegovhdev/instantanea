@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { login } from "$lib/services/api";
   import { userState } from "$lib/stores/global-state.svelte";
-  import LoginForm from "$lib/features/LoginForm.svelte";
+  import LoginForm from "$lib/features/forms/LoginForm.svelte";
 
   let errorMessage = $state("e")
   let invisible = $derived(errorMessage.trim() === "e")
@@ -11,8 +11,10 @@
     errorMessage = error.message
   }
 
-  function onSuccess(payload) {
-    userState.username = payload.username;
+  function onSuccess(data) {
+    console.log(data)
+    userState.username = data.username;
+    userState.profilePictureUrl = data.profileImageUrl
     userState.logged = true;
     goto("/")
   }

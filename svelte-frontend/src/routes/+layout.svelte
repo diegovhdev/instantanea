@@ -1,7 +1,7 @@
 <script>
   import { userState } from '$lib/stores/global-state.svelte';
-  import Navbar from '$lib/navigation/Navbar.svelte';
-  import NavbarAfterLogin from "$lib/navigation/NavbarAfterLogin.svelte"
+  import Navbar from '$lib/features/navigation/Navbar.svelte';
+  import NavbarAfterLogin from "$lib/features/navigation/NavbarAfterLogin.svelte"
 	import './layout.css';
 
 	let { children } = $props();

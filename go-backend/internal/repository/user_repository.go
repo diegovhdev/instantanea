@@ -16,9 +16,9 @@ func (r *UserRepository) Find(ctx context.Context, user_id int) (model.User, err
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email FROM users WHERE user_id=$1",
+		"SELECT user_id, username, password, email, profile_image_url FROM users WHERE user_id=$1",
 		user_id,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfileImageUrl)
 
 	return u, err
 }
@@ -28,9 +28,9 @@ func (r *UserRepository) FindByUsername(ctx context.Context, username string) (m
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email FROM users WHERE username=$1",
+		"SELECT user_id, username, password, email, profile_image_url FROM users WHERE username=$1",
 		username,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfileImageUrl)
 
 	return u, err
 }
@@ -40,9 +40,9 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (model.U
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email FROM users WHERE email=$1",
+		"SELECT user_id, username, password, email, profile_image_url FROM users WHERE email=$1",
 		email,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfileImageUrl)
 
 	return u, err
 }
