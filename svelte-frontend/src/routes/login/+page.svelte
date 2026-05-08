@@ -15,6 +15,7 @@
     console.log(data)
     userState.username = data.username;
     userState.profilePictureUrl = data.profileImageUrl
+    userState.id = data.id;
     userState.logged = true;
     goto("/")
   }

@@ -1,12 +1,12 @@
 <script>
+  import ProfilePicture from "./ProfilePicture.svelte";
+
   let {src, children, callback} = $props()
   let hover = $state(false)
 </script>
 
 <button class="profile" onclick={callback}>
-  <div class="avatar">
-    <img {src} alt="profile">
-  </div>
+  <ProfilePicture {src} />
   {@render children()}
 </button>
 
@@ -28,21 +28,6 @@
 .profile:hover {
   text-decoration: underline;
   transform: scale(1);
-}
-
-.avatar {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  height: calc(var(--height) * 1.12);
-  overflow: hidden;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  image-rendering: auto;
-  object-fit: cover;
-  object-position: center;
 }
 
 </style>

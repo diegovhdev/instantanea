@@ -4,6 +4,7 @@
   let {
     children,
     loading = false,
+    marginTop = "0",
   } = $props();
   
   let height = $state() 
@@ -13,7 +14,8 @@
 <button
   disabled={loading}
   aria-busy={loading}
-  class="btn"
+  class="btn" 
+  style:margin-top={marginTop}
   bind:clientHeight={height}
 >
   <!-- contenido -->

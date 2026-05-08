@@ -71,3 +71,78 @@ export async function feed(payload) {
     goto("/login");
   }
 }
+
+export async function putProfilePicture(formData) {
+  const response = await fetch(
+    `${prefix}/users/${userState.id}/profile-picture`,
+    {
+      method: "PUT",
+      body: formData,
+      credentials: "include",
+    },
+  );
+
+  if (!response.ok) {
+    let message = await response.text();
+    throw new Error(message);
+  }
+
+  data = await response.json();
+
+  if (!data.pictureURL) {
+    let message = "Ocurrio un error en el servidor";
+    throw new Error(message);
+  }
+
+  userState = data.pictureURL;
+}
+
+export async function putUsername(data) {
+  const response = await fetch(`${prefix}/users/${userState.id}/username`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    throw new Error(message);
+  }
+
+  userState.username = username;
+}
+
+export async function putEmail(data) {
+  const response = await fetch(`${prefix}/users/${userState.id}/email`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    throw new Error(message);
+  }
+}
+
+export async function putPassword(data) {
+  const response = await fetch(`${prefix}/users/${userState.id}/password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    throw new Error(message);
+  }
+}

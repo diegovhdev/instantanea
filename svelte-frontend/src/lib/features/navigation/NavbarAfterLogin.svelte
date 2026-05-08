@@ -4,6 +4,7 @@
   import { logout } from "$lib/services/api";
   import { userState } from "$lib/stores/global-state.svelte";
   import { ProfileOptions } from "$lib/stores/ui-state.svelte";
+  import { fly, slide } from "svelte/transition";
   import LogoutButton from "../settings/LogoutButton.svelte";
   import ProfileActions from "../settings/ProfileActions.svelte";
   import SettingsButton from "../settings/SettingsButton.svelte";
@@ -17,7 +18,7 @@
 
 </script>
 
-<nav>
+<nav in:slide>
   <h1>Instantanea 📸</h1>
   <div>
     <a href="/upload">Publicar</a>
