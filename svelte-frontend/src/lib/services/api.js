@@ -72,11 +72,11 @@ export async function feed(payload) {
   }
 }
 
-export async function putProfilePicture(formData) {
+export async function patchProfilePicture(formData) {
   const response = await fetch(
     `${prefix}/users/${userState.id}/profile-picture`,
     {
-      method: "PUT",
+      method: "PATCH",
       body: formData,
       credentials: "include",
     },
@@ -87,19 +87,19 @@ export async function putProfilePicture(formData) {
     throw new Error(message);
   }
 
-  data = await response.json();
+  const data = await response.json();
 
   if (!data.pictureURL) {
     let message = "Ocurrio un error en el servidor";
     throw new Error(message);
   }
 
-  userState = data.pictureURL;
+  userState.profilePictureUrl = data.pictureURL;
 }
 
-export async function putUsername(data) {
+export async function patchUsername(data) {
   const response = await fetch(`${prefix}/users/${userState.id}/username`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
@@ -112,12 +112,12 @@ export async function putUsername(data) {
     throw new Error(message);
   }
 
-  userState.username = username;
+  userState.username = data.username;
 }
 
-export async function putEmail(data) {
+export async function patchEmail(data) {
   const response = await fetch(`${prefix}/users/${userState.id}/email`, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
@@ -131,9 +131,9 @@ export async function putEmail(data) {
   }
 }
 
-export async function putPassword(data) {
+export async function postPassword(data) {
   const response = await fetch(`${prefix}/users/${userState.id}/password`, {
-    method: "PUT",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

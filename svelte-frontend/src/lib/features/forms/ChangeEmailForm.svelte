@@ -33,7 +33,7 @@
 
 </script>
 
-<form onsubmit={handleSubmit}>
+<form onsubmit={handleSubmit} oninput={() => {errorMessage = ""}}>
   <InputField name="email" bind:value={emailForm.email}>Correo: </InputField>
   <InputField name="newEmail" bind:value={emailForm.newEmail}>Nuevo correo: </InputField>
   <LoadingButton marginTop="0" {loading}>Cambiar correo</LoadingButton>

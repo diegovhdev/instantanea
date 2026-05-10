@@ -17,6 +17,11 @@ var ErrUploadingImage = errors.New("error al subir la imagen")
 var ErrUnauthenticatedUser = errors.New("Usuario no autentificado")
 var ErrInDatabase = errors.New("Hubo un error con la base de datos")
 var ErrNoContent = errors.New("No hay más contenido")
+var ErrIncorrectEmail = errors.New("correo incorrecto")
+var ErrUsernameCouldNotBeUpdated = errors.New("no se pudo actualizar el correo de usuario")
+var ErrEmailCouldNotBeUpdated = errors.New("no se pudo actualizar el correo")
+var ErrPasswordCouldNotBeUpdate = errors.New("no se pudo actualizar la contraseña")
+var ErrProfilePictureCouldNotBeUpdate = errors.New("no se pudo actualizar la foto de perfil")
 
 
 type CustomError struct {

@@ -23,7 +23,7 @@
     e.preventDefault();
     loading = true;
     try {
-      await callback();
+      await callback(passwordForm);
       errorMessage = "";
     } catch(error) {
       errorMessage = error.message;
@@ -34,7 +34,7 @@
 
 </script>
 
-<form onsubmit={handleSubmit}>
+<form onsubmit={handleSubmit} oninput={() => {errorMessage = ""}}>
   <InputField name="password" bind:value={passwordForm.password} type="password">Contreseña: </InputField>
   <InputField name="newPassword" bind:value={passwordForm.newPassword} type="password">Nueva contraseña: </InputField>
   <LoadingButton marginTop="0" {loading}>Cambiar contraseña</LoadingButton>

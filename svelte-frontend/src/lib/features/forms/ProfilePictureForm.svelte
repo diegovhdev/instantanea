@@ -20,7 +20,7 @@
   let files = $state()
   let imageURL = $derived(files && files[0] ? URL.createObjectURL(files[0]) : userState.profilePictureUrl)
   let index = $derived(files ? 1 : 0)
-  let loading = $state(true)
+  let loading = $state(false)
   let errorMessage = $state("")
 
   const clear = () => {
@@ -33,12 +33,19 @@
     loading = true
     const formData = new FormData();
     try {
+      formData.append("image", files[0])
       await callback(formData);
       errorMessage = "";
+      files = undefined;
     } catch(error) {
       errorMessage = error.message;
     }
     clear()
+  }
+
+  const handleInput = () => {
+    console.log("aca ocurrio el error")
+    errorMessage = ""
   }
 
   
@@ -59,10 +66,10 @@
     </label>
   {:else}
     <div in:fade={{duration: 250}}>
-      <LoadingButton>{steps[index].text}</LoadingButton>
+      <LoadingButton {loading}>{steps[index].text}</LoadingButton>
     </div>
     {/if}
-  <input type="file" accept="image/png, image/jpeg" name="profile-upload" id="profile-upload" class="inputfile" bind:files required oninput={errorMessage=""}>
+  <input type="file" accept="image/png, image/jpeg" name="profile-upload" id="profile-upload" class="inputfile" bind:files required oninput={handleInput}>
   <ErrorMessage error={errorMessage}/>
 </form>
 

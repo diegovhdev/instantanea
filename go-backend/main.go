@@ -50,22 +50,31 @@ func main() {
 
 	validate := validator.New()
 
-	userHandler := handler.NewAuthHanler(
+	uploader := service.NewCloudinaryUploader(cdl)
+
+	authHandler := handler.NewAuthHanler(
 		service.NewAuthService(&repository.UserRepository{Db: pool}), 
 		validate,
 		middleware.Auth,
 	)
 
 	postHandler := handler.NewPostHandler(
-		service.NewPostService(&repository.PostRepository{Db: pool}, service.NewCloudinaryUploader(cdl)), 
+		service.NewPostService(&repository.PostRepository{Db: pool}, uploader), 
+		validate,
+		middleware.Auth,
+	)
+
+	userHandler := handler.NewUserHanler(
+		service.NewUserService(&repository.UserRepository{Db: pool}, uploader),
 		validate,
 		middleware.Auth,
 	)
 
 	mux := http.NewServeMux()
 
-	userHandler.RegisterRoutes(mux)
+	authHandler.RegisterRoutes(mux)
 	postHandler.RegisterRoutes(mux)
+	userHandler.RegisterRoutes(mux)
 
 	fmt.Println("Inicio el servidor en el puerto :8080")
 

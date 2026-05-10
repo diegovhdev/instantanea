@@ -13,11 +13,12 @@
   async function handleSubmit(e) {
     e.preventDefault();
     loading = true;
-    data = {
+    const data = {
       username: username
     }
+    console.log(data)
     try {
-      await callback(username)
+      await callback(data)
       errorMessage = ""
     } catch(error) {
       errorMessage = error.message;
@@ -29,7 +30,7 @@
 
 </script>
 
-<form onsubmit={handleSubmit}>
+<form onsubmit={handleSubmit} oninput={() => {errorMessage = ""}}>
   <InputField name="username" bind:value={username}>Nombre de usuario: </InputField>
   <LoadingButton marginTop="0" {loading}>Cambiar nombre</LoadingButton>
   <ErrorMessage error={errorMessage}/>

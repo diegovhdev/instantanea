@@ -3,17 +3,17 @@
   import ChangeNameForm from "$lib/features/forms/ChangeNameForm.svelte";
   import ChangePasswordForm from "$lib/features/forms/ChangePasswordForm.svelte";
   import ProfilePictureForm from "$lib/features/forms/ProfilePictureForm.svelte";
-  import { putEmail, putPassword, putProfilePicture, putUsername } from "$lib/services/api";
+  import { patchEmail, patchProfilePicture, patchUsername, postPassword } from "$lib/services/api";
   import { fly } from "svelte/transition";
 
 
 </script>
 
 <div in:fly>
-  <ProfilePictureForm callback={putProfilePicture}/>
-  <ChangeNameForm  callback={putUsername}/>
-  <ChangeEmailForm callback={putEmail}/>
-  <ChangePasswordForm callback={putPassword}/>
+  <ProfilePictureForm callback={patchProfilePicture}/>
+  <ChangeNameForm  callback={patchUsername}/>
+  <ChangeEmailForm callback={patchEmail}/>
+  <ChangePasswordForm callback={postPassword}/>
 </div>
 
 <style>
