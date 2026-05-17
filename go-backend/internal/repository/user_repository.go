@@ -17,9 +17,9 @@ func (r *UserRepository) Find(ctx context.Context, userId int) (model.User, erro
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email, profile_image_url FROM users WHERE user_id=$1",
+		"SELECT user_id, username, password, email, profile_picture_url, is_active FROM users WHERE user_id=$1",
 		userId,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfileImageUrl)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive)
 
 	return u, err
 }
@@ -29,9 +29,9 @@ func (r *UserRepository) FindByUsername(ctx context.Context, username string) (m
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email, profile_image_url FROM users WHERE username=$1",
+		"SELECT user_id, username, password, email, profile_picture_url, is_active FROM users WHERE username=$1",
 		username,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfileImageUrl)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive)
 
 	return u, err
 }
@@ -41,9 +41,9 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (model.U
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email, profile_image_url FROM users WHERE email=$1",
+		"SELECT user_id, username, password, email, profile_picture_url, is_active FROM users WHERE email=$1",
 		email,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfileImageUrl)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive)
 
 	return u, err
 }
@@ -98,10 +98,28 @@ func (r *UserRepository) UpdateEmail(ctx context.Context, userId int, email stri
 	return nil
 }
 
+func (r *UserRepository) DeleteUser(ctx context.Context, userId int) (error) {
+	tag, err := r.Db.Exec(
+		ctx,
+		"UPDATE users SET is_active=FALSE WHERE user_id=$1",
+		userId,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	if tag.RowsAffected() == 0 {
+		return errors.New("0 columnas afectadas")
+	}
+
+	return nil
+}
+
 func (r *UserRepository) UpdateProfilePicture(ctx context.Context, userId int, url string) (error) {
 	tag, err := r.Db.Exec(
 		ctx,
-		"UPDATE users SET profile_image_url=$2 WHERE user_id=$1",
+		"UPDATE users SET profile_picture_url=$2 WHERE user_id=$1",
 		userId,
 		url,
 	)

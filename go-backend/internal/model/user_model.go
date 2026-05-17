@@ -2,11 +2,12 @@ package model
 
 
 type User struct {
-	UserId          int    `json:"id"`
-	Username        string `json:"username" validate:"required,min=4,max=14"`
-	Email           string `json:"email" validate:"required,email"`
-	Password        string `json:"password" validate:"required,min=5,max=10"`
-	ProfileImageUrl string `json:"profileImageUrl"`
+	UserId            int    `json:"id"`
+	Username          string `json:"username" validate:"required,min=4,max=14"`
+	Email             string `json:"email" validate:"required,email"`
+	Password          string `json:"password" validate:"required,min=5,max=10"`
+	ProfilePictureUrl string `json:"profilePictureUrl"`
+	IsActive          bool
 }
 
 type UserLoginRequest struct {
@@ -23,9 +24,9 @@ type UserRegisterRequest struct {
 
 
 type UserResponse struct {
-	UserId          int    `json:"id"`
-	Username        string `json:"username" validate:"required,min=4,max=14"`
-	ProfileImageUrl string `json:"profileImageUrl"`
+	UserId            int    `json:"id"`
+	Username          string `json:"username" validate:"required,min=4,max=14"`
+	ProfilePictureUrl string `json:"profilePictureUrl"`
 }
 
 type RequestUpdateUsername struct {
@@ -46,6 +47,10 @@ type ResponseUpdateProfilePicture struct {
 	PictureURL string `json:"pictureURL"`
 }
 
+type RequestDeleteUser struct {
+	Password string `json:"password" validate:"required,min=5,max=10"`
+}
+
 func (u UserRegisterRequest) ToUser() User {
 	return User {
 		Username: u.Username,
@@ -58,6 +63,7 @@ func (u User) ToUserResponse() UserResponse {
 	return UserResponse{
 		UserId: u.UserId,
 		Username: u.Username,
-		ProfileImageUrl: u.ProfileImageUrl,
+		ProfilePictureUrl: u.ProfilePictureUrl,
 	}
 }
+

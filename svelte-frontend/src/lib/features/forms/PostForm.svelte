@@ -22,6 +22,7 @@
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!files) return;
     loading = true
     const formData = new FormData();
     formData.append("image", files[0])

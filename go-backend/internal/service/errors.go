@@ -22,6 +22,7 @@ var ErrUsernameCouldNotBeUpdated = errors.New("no se pudo actualizar el correo d
 var ErrEmailCouldNotBeUpdated = errors.New("no se pudo actualizar el correo")
 var ErrPasswordCouldNotBeUpdate = errors.New("no se pudo actualizar la contraseña")
 var ErrProfilePictureCouldNotBeUpdate = errors.New("no se pudo actualizar la foto de perfil")
+var ErrUserCouldNotBeDeleted = errors.New("No se pudo eliminar el usuario")
 
 
 type CustomError struct {

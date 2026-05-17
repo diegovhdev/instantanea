@@ -41,7 +41,7 @@ func (s *AuthService) Login(ctx context.Context, user model.UserLoginRequest) (s
 
 	userFound, err := s.Repository.FindByUsername(ctx, user.Username)
 
-	if err != nil {
+	if err != nil || !userFound.IsActive {
 		return "", model.UserResponse{}, &CustomError{err, ErrUserNotFound}
 	}
 

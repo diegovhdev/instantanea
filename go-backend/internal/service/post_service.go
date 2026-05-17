@@ -52,6 +52,49 @@ func (s *PostService) GetPosts(ctx context.Context, limit, offset int) ([]model.
 }
 
 
+func (s *PostService) GetPostsById(ctx context.Context, stopId int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyOrderedById(ctx, stopId)
+
+	if err != nil {
+		return nil, &CustomError{err, ErrInDatabase}
+	}
+
+	if len(posts) == 0 {
+		return nil, &CustomError{nil, ErrNoContent}
+	}
+
+	return posts, nil
+}
+
+func (s *PostService) GetPostsByVotes(ctx context.Context, stopId int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyOrderedByVotes(ctx, stopId)
+
+	if err != nil {
+		return nil, &CustomError{err, ErrInDatabase}
+	}
+
+	if len(posts) == 0 {
+		return nil, &CustomError{nil, ErrNoContent}
+	}
+
+	return posts, nil
+}
+
+func (s *PostService) GetFavoritePosts(ctx context.Context, stopId int, id int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyOrderedByFavorites(ctx, stopId, id)
+
+	if err != nil {
+		return nil, &CustomError{err, ErrInDatabase}
+	}
+
+	if len(posts) == 0 {
+		return nil, &CustomError{nil, ErrNoContent}
+	}
+
+	return posts, nil
+}
+
+
 func NewPostService(repository *repository.PostRepository, uploader Uploader) *PostService {
 	return &PostService{
 		Repository: repository,

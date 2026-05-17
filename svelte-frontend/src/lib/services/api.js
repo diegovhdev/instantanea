@@ -146,3 +146,36 @@ export async function postPassword(data) {
     throw new Error(message);
   }
 }
+
+export async function deleteUser(data) {
+  const response = await fetch(`${prefix}/users/${userState.id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    throw new Error(message);
+  } else {
+    logout();
+  }
+}
+
+export async function getPosts(orderedBy) {
+  const response = await fetch(`${prefix}/posts?ordered-by=${orderedBy}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+  const data = await response.json();
+  return data;
+}

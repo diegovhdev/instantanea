@@ -35,7 +35,7 @@
 </script>
 
 <form onsubmit={handleSubmit} oninput={() => {errorMessage = ""}}>
-  <InputField name="password" bind:value={passwordForm.password} type="password">Contreseña: </InputField>
+  <InputField name="password" bind:value={passwordForm.password} type="password">Contraseña: </InputField>
   <InputField name="newPassword" bind:value={passwordForm.newPassword} type="password">Nueva contraseña: </InputField>
   <LoadingButton marginTop="0" {loading}>Cambiar contraseña</LoadingButton>
   <ErrorMessage error={errorMessage} />

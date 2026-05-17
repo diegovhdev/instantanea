@@ -3,7 +3,8 @@
   import ChangeNameForm from "$lib/features/forms/ChangeNameForm.svelte";
   import ChangePasswordForm from "$lib/features/forms/ChangePasswordForm.svelte";
   import ProfilePictureForm from "$lib/features/forms/ProfilePictureForm.svelte";
-  import { patchEmail, patchProfilePicture, patchUsername, postPassword } from "$lib/services/api";
+  import UserDeletionForm from "$lib/features/forms/UserDeletionForm.svelte";
+  import { deleteUser, patchEmail, patchProfilePicture, patchUsername, postPassword } from "$lib/services/api";
   import { fly } from "svelte/transition";
 
 
@@ -14,6 +15,7 @@
   <ChangeNameForm  callback={patchUsername}/>
   <ChangeEmailForm callback={patchEmail}/>
   <ChangePasswordForm callback={postPassword}/>
+  <UserDeletionForm callback={deleteUser}/>
 </div>
 
 <style>

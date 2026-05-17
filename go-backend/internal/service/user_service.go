@@ -85,6 +85,27 @@ func (s *UserService) UpdatePassword(ctx context.Context, userId int, data model
 	return nil
 }
 
+func (s *UserService) DeleteUser(ctx context.Context, userId int, data model.RequestDeleteUser) (error) {
+
+	user, err := s.Repository.Find(ctx, userId)
+
+	if err != nil {
+		return &CustomError{err, ErrUserNotFound}
+	}
+
+	if CheckPassword(user.Password, data.Password) != nil {
+		return &CustomError{nil, ErrIncorrectPassword}
+	}
+	
+	err = s.Repository.DeleteUser(ctx, userId)
+
+	if err != nil {
+		return &CustomError{err, ErrUserCouldNotBeDeleted}
+	}
+
+	return nil
+}
+
 func (s *UserService) UpdateProfilePicture(ctx context.Context, userId int, file multipart.File) (string, error) {
 
 	url, _, err := s.uploader.Upload(ctx, file)

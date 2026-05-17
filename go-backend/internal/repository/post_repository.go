@@ -43,3 +43,59 @@ func (r *PostRepository) GetMany(ctx context.Context, limit int, offset int) ([]
 
 	return posts, err
 }
+
+
+func (r *PostRepository) GetManyOrderedById(ctx context.Context, stopId int) ([]model.PostResponse, error) {
+	rows, err := r.Db.Query(ctx, `
+	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url 
+	FROM posts as p
+	JOIN users AS u ON p.user_id = u.user_id
+	WHERE u.is_active = TRUE AND p.post_id >$1
+	ORDER BY p.post_id DESC;`, stopId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	posts, err := pgx.CollectRows(rows, pgx.RowToStructByName[model.PostResponse])
+
+	return posts, err
+}
+
+func (r *PostRepository) GetManyOrderedByVotes(ctx context.Context, stopId int) ([]model.PostResponse, error) {
+	rows, err := r.Db.Query(ctx, `
+	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url 
+	FROM posts as p
+	JOIN users AS u ON p.user_id = u.user_id
+	WHERE u.is_active = TRUE AND p.post_id >$1
+	ORDER BY p.votes DESC;`, stopId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	posts, err := pgx.CollectRows(rows, pgx.RowToStructByName[model.PostResponse])
+
+	return posts, err
+}
+
+func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, stopId int, id int) ([]model.PostResponse, error) {
+	rows, err := r.Db.Query(ctx, `
+	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url 
+	FROM posts as p
+	JOIN users AS u ON p.user_id = u.user_id
+	JOIN votes AS v ON p.post_id = v.post_id
+	WHERE u.is_active = TRUE AND p.post_id > $1 AND v.user_id = $2
+	ORDER BY p.votes DESC;`, stopId, id)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	posts, err := pgx.CollectRows(rows, pgx.RowToStructByName[model.PostResponse])
+
+	return posts, err
+}

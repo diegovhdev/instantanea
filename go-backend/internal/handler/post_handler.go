@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"encoding/json"
+	"instantanea/internal/model"
 	"instantanea/internal/service"
 	"net/http"
 	"strconv"
@@ -71,15 +71,49 @@ func (h *PostHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(posts)
+	WriteJSON(w, http.StatusOK, posts)
 }
 
+func (h *PostHandler) GetPostsDispatcher(w http.ResponseWriter, r *http.Request) {
+
+	orderedByStr := r.URL.Query().Get("ordered-by")
+	var postLists []model.PostResponse
+	var err error
+	stopIdStr := r.URL.Query().Get("stopId")
+	var stopId int;
+
+	if stopIdStr == "" {
+		stopId = -1
+	} else {
+		stopId, err = strconv.Atoi(stopIdStr)
+		if err != nil {
+			http.Error(w, "stopId tiene que ser un numero", http.StatusBadRequest)
+			return
+		}
+	}
+
+	switch orderedByStr {
+	case "id":
+		postLists, err = h.Service.GetPostsById(r.Context(), stopId)
+	case "votes":
+		postLists, err = h.Service.GetPostsByVotes(r.Context(), stopId)
+	case "favorites":
+	default:
+		http.Error(w, "argumento de url invalido", http.StatusBadRequest)
+		return
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	WriteJSON(w, http.StatusOK, postLists)
+}
 
 func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("POST /posts", h.middleware.HandlerFunc(h.Post))
-	mux.Handle("GET /posts", h.middleware.HandlerFunc(h.ListPosts))
+	mux.Handle("GET /posts", h.middleware.HandlerFunc(h.GetPostsDispatcher))
 }
 
 func NewPostHandler(service *service.PostService, validator *validator.Validate, middleware Middleware) PostHandler {

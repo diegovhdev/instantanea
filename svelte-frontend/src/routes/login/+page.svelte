@@ -3,9 +3,9 @@
   import { login } from "$lib/services/api";
   import { userState } from "$lib/stores/global-state.svelte";
   import LoginForm from "$lib/features/forms/LoginForm.svelte";
+  import ErrorMessage from "$lib/components/ErrorMessage.svelte";
 
-  let errorMessage = $state("e")
-  let invisible = $derived(errorMessage.trim() === "e")
+  let errorMessage = $state("")
 
   function onError(error) {
     errorMessage = error.message
@@ -14,7 +14,7 @@
   function onSuccess(data) {
     console.log(data)
     userState.username = data.username;
-    userState.profilePictureUrl = data.profileImageUrl
+    userState.profilePictureUrl = data.profilePictureUrl
     userState.id = data.id;
     userState.logged = true;
     goto("/")
@@ -23,17 +23,16 @@
 </script>
 
 <div>
-  <h3 class:invisible >{errorMessage}</h3>
+  <ErrorMessage error={errorMessage} />
   <LoginForm callback={login} {onError} {onSuccess}/>
 </div>
 
 <style>
 
-  .invisible {
-    opacity: 0;
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  h3 {
-    color: var(--color-error)
-  }
 </style>

@@ -1,4 +1,6 @@
 <script>
+  import { slide } from "svelte/transition";
+
 </script>
 
 <nav>
@@ -18,6 +20,8 @@
     justify-content: space-between;
     padding: 1rem;
     place-self: stretch;
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
   }
 
   h1 {

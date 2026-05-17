@@ -18,7 +18,7 @@
 
 </script>
 
-<nav in:slide>
+<nav transition:slide>
   <h1>Instantanea 📸</h1>
   <div>
     <a href="/upload">Publicar</a>
@@ -41,6 +41,10 @@
     padding: 16px;
     place-self: stretch;
     position: sticky;
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
+    position: sticky;
+    top: 0;
   }
 
   nav > h1 {
