@@ -47,7 +47,7 @@ func (r *PostRepository) GetMany(ctx context.Context, limit int, offset int) ([]
 
 func (r *PostRepository) GetManyOrderedById(ctx context.Context, stopId int) ([]model.PostResponse, error) {
 	rows, err := r.Db.Query(ctx, `
-	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url 
+	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url, p.votes
 	FROM posts as p
 	JOIN users AS u ON p.user_id = u.user_id
 	WHERE u.is_active = TRUE AND p.post_id >$1
@@ -65,11 +65,11 @@ func (r *PostRepository) GetManyOrderedById(ctx context.Context, stopId int) ([]
 
 func (r *PostRepository) GetManyOrderedByVotes(ctx context.Context, stopId int) ([]model.PostResponse, error) {
 	rows, err := r.Db.Query(ctx, `
-	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url 
+	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url, p.votes
 	FROM posts as p
 	JOIN users AS u ON p.user_id = u.user_id
 	WHERE u.is_active = TRUE AND p.post_id >$1
-	ORDER BY p.votes DESC;`, stopId)
+	ORDER BY p.votes, p.post_id DESC;`, stopId)
 
 	if err != nil {
 		return nil, err
@@ -81,9 +81,12 @@ func (r *PostRepository) GetManyOrderedByVotes(ctx context.Context, stopId int) 
 	return posts, err
 }
 
+func (r *PostRepository) InsertVote(postId int, userId int) {
+}
+
 func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, stopId int, id int) ([]model.PostResponse, error) {
 	rows, err := r.Db.Query(ctx, `
-	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url 
+	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url, p.votes
 	FROM posts as p
 	JOIN users AS u ON p.user_id = u.user_id
 	JOIN votes AS v ON p.post_id = v.post_id

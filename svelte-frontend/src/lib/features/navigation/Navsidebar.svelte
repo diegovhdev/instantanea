@@ -1,14 +1,23 @@
 <script>
   import { slide } from "svelte/transition";
 
+  import {page} from '$app/state';
+
+  const lastSegment = $derived(page.url.pathname.split('/').pop());
+
+  const paths = [
+    {name: "new", text: "Nuevo"},
+    {name: "popular", text: "Popular"},
+    {name: "favorites", text: "Favoritos"},
+  ]
 
 </script>
 
 <nav transition:slide={{axis: "x"}}>
   <div>
-    <a href="/new">Nuevo</a>
-    <a href="/popular">Popular</a>
-    <a href="/favorites">Favoritos</a>
+    {#each paths as path (path.name)}
+      <a href={`/${path.name}`} class={path.name === lastSegment ? "selected" : ""}>{path.text}</a>
+    {/each}
   </div>
 </nav>
 
@@ -19,12 +28,13 @@
     grid-row: 2 / 3;
     align-self: stretch;
   }
-
+  
   nav > div {
     display: flex;
-    flex-direction: column;
     position: sticky;
-    top: 200px;
+    margin-top: 24px;
+    top: 0px;
+    flex-direction: column;
     gap: 1rem;
   }
 
@@ -41,5 +51,14 @@
   a:hover {
     background-color: var(--color-secondary);
     color: var(--color-primary)
+  }
+
+  a:first-child {
+    margin-top: 40px;
+  }
+
+  .selected {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
   }
 </style>

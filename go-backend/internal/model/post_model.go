@@ -9,10 +9,11 @@ type Post struct {
 }
 
 type PostResponse struct {
-	PostId           int    `json:"postId"`
-	UserId           int    `json:"userId"`
-	Username         string `json:"username"`
+	PostId            int    `json:"postId"`
+	UserId            int    `json:"userId"`
+	Username          string `json:"username"`
 	ProfilePictureUrl string `json:"profilePictureUrl"`
-	Url              string `json:"url"` 
-	Text             string `json:"text"`
+	Url               string `json:"url"` 
+	Text              string `json:"text"`
+	Votes             int    `json:"votes"`
 }
