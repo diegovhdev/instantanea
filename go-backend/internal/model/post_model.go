@@ -6,6 +6,7 @@ type Post struct {
 	PublicId string `json:"publicID"`
 	Url      string `json:"url"` 
 	Text     string `json:"text"`
+	Votes    int    `json:"votes"`
 }
 
 type PostResponse struct {
@@ -16,4 +17,5 @@ type PostResponse struct {
 	Url               string `json:"url"` 
 	Text              string `json:"text"`
 	Votes             int    `json:"votes"`
+	Voted             bool   `json:"voted"`  
 }

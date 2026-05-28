@@ -29,7 +29,7 @@
   --color-warning: #f59e0b;
   --color-error: #841c26;
   --color-info: #3b82f6;
-
+  --color-voted: #d6336c;
   /* 🔸 Botones */
   --btn-primary-bg: var(--color-primary);
   --btn-primary-text: #f1f7ed;

@@ -92,11 +92,18 @@ func (h *PostHandler) GetPostsDispatcher(w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	userId, err := ExtractId(r)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
 	switch orderedByStr {
 	case "id":
-		postLists, err = h.Service.GetPostsById(r.Context(), stopId)
+		postLists, err = h.Service.GetPostsById(r.Context(),userId, stopId)
 	case "votes":
-		postLists, err = h.Service.GetPostsByVotes(r.Context(), stopId)
+		postLists, err = h.Service.GetPostsByVotes(r.Context(), userId, stopId)
 	case "favorites":
 	default:
 		http.Error(w, "argumento de url invalido", http.StatusBadRequest)
@@ -111,9 +118,64 @@ func (h *PostHandler) GetPostsDispatcher(w http.ResponseWriter, r *http.Request)
 	WriteJSON(w, http.StatusOK, postLists)
 }
 
+func (h *PostHandler) PostVote(w http.ResponseWriter, r *http.Request) {
+	userId, err := ExtractId(r) 
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	postIdString := r.PathValue("id")
+	postId, err := strconv.Atoi(postIdString)
+
+	if err != nil {
+		http.Error(w, "el id debe ser un numero", http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.VotePost(r.Context(), postId, userId)
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (h *PostHandler) DeleteVote(w http.ResponseWriter, r *http.Request) {
+	userId, err := ExtractId(r) 
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	postIdString := r.PathValue("id")
+	postId, err := strconv.Atoi(postIdString)
+
+	if err != nil {
+		http.Error(w, "el id debe ser un numero", http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.UnvotePost(r.Context(), postId, userId)
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+
 func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("POST /posts", h.middleware.HandlerFunc(h.Post))
 	mux.Handle("GET /posts", h.middleware.HandlerFunc(h.GetPostsDispatcher))
+	mux.Handle("POST /posts/{id}/vote", h.middleware.HandlerFunc(h.PostVote))
+	mux.Handle("DELETE /posts/{id}/vote", h.middleware.HandlerFunc(h.DeleteVote))
 }
 
 func NewPostHandler(service *service.PostService, validator *validator.Validate, middleware Middleware) PostHandler {

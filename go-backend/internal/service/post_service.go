@@ -52,8 +52,8 @@ func (s *PostService) GetPosts(ctx context.Context, limit, offset int) ([]model.
 }
 
 
-func (s *PostService) GetPostsById(ctx context.Context, stopId int) ([]model.PostResponse, error) {
-	posts, err := s.Repository.GetManyOrderedById(ctx, stopId)
+func (s *PostService) GetPostsById(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyOrderedById(ctx, userId, stopId)
 
 	if err != nil {
 		return nil, &CustomError{err, ErrInDatabase}
@@ -66,8 +66,8 @@ func (s *PostService) GetPostsById(ctx context.Context, stopId int) ([]model.Pos
 	return posts, nil
 }
 
-func (s *PostService) GetPostsByVotes(ctx context.Context, stopId int) ([]model.PostResponse, error) {
-	posts, err := s.Repository.GetManyOrderedByVotes(ctx, stopId)
+func (s *PostService) GetPostsByVotes(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyOrderedByVotes(ctx, userId, stopId)
 
 	if err != nil {
 		return nil, &CustomError{err, ErrInDatabase}
@@ -95,9 +95,45 @@ func (s *PostService) GetFavoritePosts(ctx context.Context, stopId int, id int) 
 }
 
 
+func (s *PostService) VotePost(ctx context.Context, postId int, userId int) error {
+
+	_, err := s.Repository.GetVote(ctx, postId, userId)
+
+	if err == nil {
+		return err
+	}
+
+	err = s.Repository.InsertVote(ctx, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *PostService) UnvotePost(ctx context.Context, postId int, userId int) error {
+
+	_, err := s.Repository.GetVote(ctx, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	err = s.Repository.RemoveVote(ctx, postId, userId)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
 func NewPostService(repository *repository.PostRepository, uploader Uploader) *PostService {
 	return &PostService{
 		Repository: repository,
 		uploader: uploader,
 	}
 }
+

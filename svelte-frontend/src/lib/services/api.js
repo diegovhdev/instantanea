@@ -179,3 +179,31 @@ export async function getPosts(orderedBy) {
   const data = await response.json();
   return data;
 }
+
+export async function votePost(postId) {
+  const response = await fetch(`${prefix}/posts/${postId}/vote`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    console.log("aaa");
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+}
+
+export async function unvotePost(postId) {
+  const response = await fetch(`${prefix}/posts/${postId}/vote`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    console.log("aaa");
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+}

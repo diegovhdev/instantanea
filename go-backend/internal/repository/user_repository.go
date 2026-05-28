@@ -60,6 +60,14 @@ func (r *UserRepository) Insert(ctx context.Context, user model.User) (error) {
 	return err
 }
 
+func (r *UserRepository) InsertFollow(ctx context.Context, followerId int, followingId int) error {
+	return nil
+}
+
+func (r *UserRepository) RemoveFollow(ctx context.Context, followerId int, followingId int) error {
+	return nil
+}
+
 func (r *UserRepository) UpdateUsername(ctx context.Context, userId int, username string) (error) {
 	tag, err := r.Db.Exec(
 		ctx,

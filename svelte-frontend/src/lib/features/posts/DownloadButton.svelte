@@ -1,10 +1,11 @@
 <script>
+  import { downloadImage } from "$lib/services/download-img";
   import DownloadIcon from "../icons/DownloadIcon.svelte";
-
+  let { data } = $props()
 
 </script>
 
-<button class="rounded-2xl">
+<button class="rounded-2xl" onclick={() => downloadImage(data.url)}>
   <DownloadIcon />
 </button>
 

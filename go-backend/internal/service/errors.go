@@ -6,11 +6,11 @@ import (
 )
 
 
-var ErrEmailAlreadyExists = errors.New("el correo ya existe")
-var ErrUsernameAlreadyExists = errors.New("el usuario ya existe")
+var ErrEmailAlreadyExists = errors.New("correo ya en uso")
+var ErrUsernameAlreadyExists = errors.New("usuaruo ya en uso")
 var ErrHashingPassword = errors.New("error en hashear la contraseña")
 var ErrInternal = errors.New("error desconocido")
-var ErrUserNotFound = errors.New("usuario no encontrado")
+var ErrUserNotFound = errors.New("usuario no existe")
 var ErrIncorrectPassword = errors.New("contraseña incorrecta")
 var ErrTokenGeneration = errors.New("error en la generación del token")
 var ErrUploadingImage = errors.New("error al subir la imagen")
@@ -23,6 +23,7 @@ var ErrEmailCouldNotBeUpdated = errors.New("no se pudo actualizar el correo")
 var ErrPasswordCouldNotBeUpdate = errors.New("no se pudo actualizar la contraseña")
 var ErrProfilePictureCouldNotBeUpdate = errors.New("no se pudo actualizar la foto de perfil")
 var ErrUserCouldNotBeDeleted = errors.New("No se pudo eliminar el usuario")
+var ErrAlreadyVoted = errors.New("Ya hay un voto registrado")
 
 
 type CustomError struct {
