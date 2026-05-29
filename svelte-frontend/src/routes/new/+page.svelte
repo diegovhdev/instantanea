@@ -1,12 +1,25 @@
 <script>
   import Post from '$lib/features/posts/Post.svelte';
+  import { setContext } from 'svelte';
   import { fade } from 'svelte/transition';
 
-  export let data;
+  let {data} = $props()
+  let posts = $state(data.posts)
+
+  function callbackFollow(following, userId) {
+    for (let i = 0; i < posts.length; i++) {
+      if (posts[i].userId === userId) {
+        posts[i].following = following
+      }
+    }
+  }
+
+  setContext("callbackFollow", callbackFollow)
+  
 </script>
 
 <div in:fade>
-  {#each data.posts as data (data.postId)}
+  {#each posts as data (data.postId)}
   <Post {data} />
   {/each}
 </div>

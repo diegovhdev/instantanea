@@ -80,8 +80,8 @@ func (s *PostService) GetPostsByVotes(ctx context.Context, userId int, stopId in
 	return posts, nil
 }
 
-func (s *PostService) GetFavoritePosts(ctx context.Context, stopId int, id int) ([]model.PostResponse, error) {
-	posts, err := s.Repository.GetManyOrderedByFavorites(ctx, stopId, id)
+func (s *PostService) GetFavoritePosts(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyOrderedByFavorites(ctx, userId, stopId)
 
 	if err != nil {
 		return nil, &CustomError{err, ErrInDatabase}

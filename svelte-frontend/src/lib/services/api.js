@@ -176,6 +176,10 @@ export async function getPosts(orderedBy) {
     console.log(message);
     throw new Error(message);
   }
+
+  if (response.status == 204) {
+    return [];
+  }
   const data = await response.json();
   return data;
 }
@@ -187,7 +191,6 @@ export async function votePost(postId) {
   });
 
   if (!response.ok) {
-    console.log("aaa");
     let message = await response.text();
     console.log(message);
     throw new Error(message);
@@ -201,9 +204,53 @@ export async function unvotePost(postId) {
   });
 
   if (!response.ok) {
-    console.log("aaa");
     let message = await response.text();
     console.log(message);
     throw new Error(message);
   }
+}
+
+export async function followUser(userId) {
+  const response = await fetch(`${prefix}/users/${userId}/follow`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+}
+
+export async function unfollowUser(userId) {
+  const response = await fetch(`${prefix}/users/${userId}/follow`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+}
+
+export async function getFollowingUsers(userId) {
+  const response = await fetch(`${prefix}/users/${userId}/following`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+
+  if (response.status == 204) {
+    return [];
+  }
+  const data = await response.json();
+  return data;
 }

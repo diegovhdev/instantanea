@@ -4,6 +4,7 @@ import (
 	"instantanea/internal/model"
 	"instantanea/internal/service"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -151,6 +152,83 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func (h *UserHandler) PostFollow(w http.ResponseWriter, r *http.Request) {
+	userId, err := ExtractId(r) 
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	followingIdString := r.PathValue("id")
+	followingId, err := strconv.Atoi(followingIdString)
+
+	if err != nil {
+		http.Error(w, "el id debe ser un numero", http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.Follow(r.Context(), userId, followingId)
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+
+
+func (h *UserHandler) DeleteFollow(w http.ResponseWriter, r *http.Request) {
+	userId, err := ExtractId(r) 
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	followingIdString := r.PathValue("id")
+	followingId, err := strconv.Atoi(followingIdString)
+
+	if err != nil {
+		http.Error(w, "el id debe ser un numero", http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.UnFollow(r.Context(), userId, followingId)
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *UserHandler) GetFollowingUsers(w http.ResponseWriter, r *http.Request) {
+
+	var users []model.UserFollowingResponse
+	userIdString := r.PathValue("id")
+	userId, err :=  strconv.Atoi(userIdString)
+
+	if err != nil {
+		http.Error(w, "el id debe ser un numero", http.StatusBadRequest)
+		return
+	}
+
+	users, err = h.Service.GetFollowingUsers(r.Context(), userId)
+
+	println(users)
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	WriteJSON(w, 200, users)
+}
+
 
 func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("PATCH /users/{id}/profile-picture", h.middleware.HandlerFunc(h.PatchProfilePicture))
@@ -158,6 +236,9 @@ func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("PATCH /users/{id}/email", h.middleware.HandlerFunc(h.PatchEmail))
 	mux.Handle("POST /users/{id}/password", h.middleware.HandlerFunc(h.PostPassword))
 	mux.Handle("DELETE /users/{id}", h.middleware.HandlerFunc(h.DeleteUser))
+	mux.Handle("POST /users/{id}/follow", h.middleware.HandlerFunc(h.PostFollow))
+	mux.Handle("DELETE /users/{id}/follow", h.middleware.HandlerFunc(h.DeleteFollow))
+	mux.Handle("GET /users/{id}/following", h.middleware.HandlerFunc(h.GetFollowingUsers))
 }
 
 

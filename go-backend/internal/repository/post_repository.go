@@ -53,14 +53,18 @@ func (r *PostRepository) GetManyOrderedById(ctx context.Context, userId int, sto
     	p.post_id, p.user_id, p.url, p.text, p.votes, 
     	u.username,
     	u.profile_picture_url,
-    	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted
+    	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
+		CASE WHEN f.follower_id IS NOT NULL THEN TRUE ELSE FALSE END AS following
 	FROM posts p
 	LEFT JOIN votes v
    		ON p.post_id = v.post_id
     	AND v.user_id = $1
 	INNER JOIN users u
-    ON p.user_id = u.user_id
-	WHERE p.is_removed = FALSE AND p.post_id >$2 
+    	ON p.user_id = u.user_id
+	LEFT JOIN follows f
+    	ON f.following_id = p.user_id
+    	AND f.follower_id = $1
+	WHERE p.is_removed = FALSE AND p.post_id >$2 AND u.is_active = TRUE
 	ORDER BY p.post_id DESC;`, userId, stopId)
 
 	if err != nil {
@@ -79,14 +83,18 @@ func (r *PostRepository) GetManyOrderedByVotes(ctx context.Context, userId int, 
     	p.post_id, p.user_id, p.url, p.text, p.votes, 
     	u.username,
     	u.profile_picture_url,
-    	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted
+    	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
+		CASE WHEN f.follower_id IS NOT NULL THEN TRUE ELSE FALSE END AS following
 	FROM posts p
 	LEFT JOIN votes v
    		ON p.post_id = v.post_id
     	AND v.user_id = $1
 	INNER JOIN users u
     ON p.user_id = u.user_id
-	WHERE p.is_removed = FALSE AND p.post_id >$2 
+	LEFT JOIN follows f
+    	ON f.following_id = p.user_id
+    	AND f.follower_id = $1
+	WHERE p.is_removed = FALSE AND p.post_id >$2 AND u.is_active = TRUE
 	ORDER BY p.votes DESC, p.post_id DESC;`, userId, stopId)
 
 	if err != nil {
@@ -184,14 +192,26 @@ func (r *PostRepository) GetPost(ctx context.Context, postId int) (model.Post, e
 }
 
 
-func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, stopId int, id int) ([]model.PostResponse, error) {
+func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
+
 	rows, err := r.Db.Query(ctx, `
-	SELECT p.post_id, p.user_id, u.username, u.profile_picture_url, p.text, p.url, p.votes
-	FROM posts as p
-	JOIN users AS u ON p.user_id = u.user_id
-	JOIN votes AS v ON p.post_id = v.post_id
-	WHERE u.is_active = TRUE AND p.post_id > $1 AND v.user_id = $2
-	ORDER BY p.votes DESC;`, stopId, id)
+	SELECT
+    	p.post_id, p.user_id, p.url, p.text, p.votes, 
+    	u.username,
+    	u.profile_picture_url,
+    	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
+		CASE WHEN f.follower_id IS NOT NULL THEN TRUE ELSE FALSE END AS following
+	FROM posts p
+	INNER JOIN votes v
+   		ON p.post_id = v.post_id
+    	AND v.user_id = $1
+	INNER JOIN users u
+    	ON p.user_id = u.user_id
+	LEFT JOIN follows f
+    	ON f.following_id = p.user_id
+    	AND f.follower_id = $1
+	WHERE p.is_removed = FALSE AND p.post_id >$2 AND u.is_active = TRUE
+	ORDER BY p.post_id DESC;`, userId, stopId)
 
 	if err != nil {
 		return nil, err

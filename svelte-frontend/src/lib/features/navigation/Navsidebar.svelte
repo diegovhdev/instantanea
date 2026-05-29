@@ -3,12 +3,11 @@
 
   import {page} from '$app/state';
 
-  const lastSegment = $derived(page.url.pathname.split('/').pop());
-
   const paths = [
     {name: "new", text: "Nuevo"},
     {name: "popular", text: "Popular"},
     {name: "favorites", text: "Favoritos"},
+    {name: "following", text: "Siguiendo"}
   ]
 
 </script>
@@ -16,7 +15,7 @@
 <nav transition:slide={{axis: "x"}}>
   <div>
     {#each paths as path (path.name)}
-      <a href={`/${path.name}`} class={path.name === lastSegment ? "selected" : ""}>{path.text}</a>
+      <a href={`/${path.name}`} class={`/${path.name}` === page.url.pathname ? "selected" : ""}>{path.text}</a>
     {/each}
   </div>
 </nav>

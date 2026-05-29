@@ -15,9 +15,9 @@
     console.log(data)
     userState.username = data.username;
     userState.profilePictureUrl = data.profilePictureUrl
-    userState.id = data.id;
+    userState.id = data.userId;
     userState.logged = true;
-    goto("/")
+    goto("/new")
   }
 
 </script>

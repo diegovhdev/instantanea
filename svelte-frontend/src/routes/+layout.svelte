@@ -6,6 +6,7 @@
   import Navsidebar from '$lib/features/navigation/Navsidebar.svelte';
 
 	let { children } = $props();
+  
 </script>
 
 <svelte:head></svelte:head>

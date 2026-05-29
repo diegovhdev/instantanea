@@ -3,30 +3,32 @@ package model
 
 type User struct {
 	UserId            int    `json:"id"`
-	Username          string `json:"username" validate:"required,min=4,max=14"`
+	Username          string `json:"username" validate:"required,min=4,max=20"`
 	Email             string `json:"email" validate:"required,email"`
-	Password          string `json:"password" validate:"required,min=5,max=10"`
+	Password          string `json:"password" validate:"required,min=5,max=15"`
 	ProfilePictureUrl string `json:"profilePictureUrl"`
 	IsActive          bool
+    UserRole          string `json:"userRole"`
 }
 
 type UserLoginRequest struct {
-	Username string `json:"username" validate:"required,min=4,max=14"`
-	Password string `json:"password" validate:"required,min=5,max=10"`
+	Username string `json:"username" validate:"required,min=4,max=20"`
+	Password string `json:"password" validate:"required,min=5,max=15"`
 }
 
 
 type UserRegisterRequest struct {
-	Username string `json:"username" validate:"required,min=4,max=14"`
+	Username string `json:"username" validate:"required,min=4,max=20"`
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=5,max=10"`
+	Password string `json:"password" validate:"required,min=5,max=15"`
 }
 
 
 type UserResponse struct {
-	UserId            int    `json:"id"`
-	Username          string `json:"username" validate:"required,min=4,max=14"`
+	UserId            int    `json:"userId"`
+	Username          string `json:"username" validate:"required,min=4,max=20"`
 	ProfilePictureUrl string `json:"profilePictureUrl"`
+	UserRole          string `json:"userRole"`
 }
 
 type RequestUpdateUsername struct {
@@ -51,6 +53,11 @@ type RequestDeleteUser struct {
 	Password string `json:"password" validate:"required,min=5,max=10"`
 }
 
+type UserFollowingResponse struct {
+	UserResponse
+	Following bool `json:"following"`
+}
+
 func (u UserRegisterRequest) ToUser() User {
 	return User {
 		Username: u.Username,
@@ -64,6 +71,8 @@ func (u User) ToUserResponse() UserResponse {
 		UserId: u.UserId,
 		Username: u.Username,
 		ProfilePictureUrl: u.ProfilePictureUrl,
+		UserRole: u.UserRole,
 	}
 }
+
 

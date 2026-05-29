@@ -24,6 +24,8 @@ var ErrPasswordCouldNotBeUpdate = errors.New("no se pudo actualizar la contrase√
 var ErrProfilePictureCouldNotBeUpdate = errors.New("no se pudo actualizar la foto de perfil")
 var ErrUserCouldNotBeDeleted = errors.New("No se pudo eliminar el usuario")
 var ErrAlreadyVoted = errors.New("Ya hay un voto registrado")
+var ErrAlreadyFollowing = errors.New("Ya se esta siguiendo al usuario")
+var ErrAlreadyNotFollowing = errors.New("No se esta siguiendo al usuario")
 
 
 type CustomError struct {

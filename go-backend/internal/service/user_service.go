@@ -128,6 +128,53 @@ func (s *UserService) UpdateProfilePicture(ctx context.Context, userId int, file
 	return url, nil
 }
 
+func (s *UserService) Follow(ctx context.Context, userId int, followingId int) error {
+	_, err := s.Repository.GetFollow(ctx, userId, followingId)
+
+	if err == nil {
+		return &CustomError{nil, ErrAlreadyFollowing}
+	}
+
+	err = s.Repository.InsertFollow(ctx, userId, followingId)
+
+	if err != nil {
+		return &CustomError{err, ErrInDatabase}
+	}
+
+	return nil
+}
+
+func (s *UserService) UnFollow(ctx context.Context, userId int, followingId int) error {
+
+	_, err := s.Repository.GetFollow(ctx, userId, followingId)
+
+	if err != nil {
+		return &CustomError{err, ErrAlreadyNotFollowing}
+	}
+
+	err = s.Repository.RemoveFollow(ctx, userId, followingId)
+
+	if err != nil {
+		return &CustomError{err, ErrInDatabase}
+	}
+
+	return nil
+}
+
+func (s *UserService) GetFollowingUsers(ctx context.Context, userId int) ([]model.UserFollowingResponse, error) {
+	users, err := s.Repository.GetFollowingUsers(ctx, userId)
+
+	if err != nil {
+		return nil, &CustomError{err, ErrInDatabase}
+	}
+
+	if len(users) == 0 {
+		return nil, &CustomError{nil, ErrNoContent}
+	}
+
+	return users, nil
+}
+
 func NewUserService(repository *repository.UserRepository, uploader Uploader) *UserService {
 	return &UserService{
 		Repository: repository,

@@ -3,7 +3,7 @@
   import { setContext } from 'svelte';
   import { fade } from 'svelte/transition';
 
-  let {data} = $props()
+  let {data} = $props();
   let posts = $state(data.posts)
 
   function callbackFollow(following, userId) {
@@ -18,9 +18,13 @@
 </script>
 
 <div in:fade>
+  {#if posts.length === 0 }
+    <h3>No tienes ninguna imagen marcada como favorita</h3>
+  {:else}
   {#each posts as data (data.postId)}
-  <Post {data} />
+    <Post {data} />
   {/each}
+  {/if}
 </div>
 
 
@@ -31,5 +35,9 @@
     flex-direction: column;
     align-items: center;
     gap: 5rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
   }
 </style>

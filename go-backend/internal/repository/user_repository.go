@@ -5,6 +5,7 @@ import (
 	"errors"
 	"instantanea/internal/model"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -17,9 +18,9 @@ func (r *UserRepository) Find(ctx context.Context, userId int) (model.User, erro
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email, profile_picture_url, is_active FROM users WHERE user_id=$1",
+		"SELECT user_id, username, password, email, profile_picture_url, is_active, user_role FROM users WHERE user_id=$1",
 		userId,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive, &u.UserRole)
 
 	return u, err
 }
@@ -29,9 +30,9 @@ func (r *UserRepository) FindByUsername(ctx context.Context, username string) (m
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email, profile_picture_url, is_active FROM users WHERE username=$1",
+		"SELECT user_id, username, password, email, profile_picture_url, is_active, user_role FROM users WHERE username=$1",
 		username,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive, &u.UserRole)
 
 	return u, err
 }
@@ -41,9 +42,9 @@ func (r *UserRepository) FindByEmail(ctx context.Context, email string) (model.U
 
 	err := r.Db.QueryRow(
 		ctx,
-		"SELECT user_id, username, password, email, profile_picture_url, is_active FROM users WHERE email=$1",
+		"SELECT user_id, username, password, email, profile_picture_url, is_active, user_role FROM users WHERE email=$1",
 		email,
-	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive)
+	).Scan(&u.UserId, &u.Username, &u.Password, &u.Email, &u.ProfilePictureUrl, &u.IsActive, &u.UserRole)
 
 	return u, err
 }
@@ -60,13 +61,6 @@ func (r *UserRepository) Insert(ctx context.Context, user model.User) (error) {
 	return err
 }
 
-func (r *UserRepository) InsertFollow(ctx context.Context, followerId int, followingId int) error {
-	return nil
-}
-
-func (r *UserRepository) RemoveFollow(ctx context.Context, followerId int, followingId int) error {
-	return nil
-}
 
 func (r *UserRepository) UpdateUsername(ctx context.Context, userId int, username string) (error) {
 	tag, err := r.Db.Exec(
@@ -160,4 +154,65 @@ func (r *UserRepository) UpdatePassword(ctx context.Context, userId int, passwor
 	}
 
 	return nil
+}
+
+
+func (r *UserRepository) GetFollow(ctx context.Context, userId int, followingId int) (model.Follow, error) {
+
+	var follow model.Follow
+
+	err := r.Db.QueryRow(
+		ctx,
+		"SELECT follower_id, following_id FROM follows WHERE follower_id=$1 AND following_id=$2",
+		userId, followingId,
+	).Scan(&follow.FollowId, &follow.FollowingId)
+
+	return follow, err
+}
+
+func (r *UserRepository) InsertFollow(ctx context.Context, userId int, followingId int) error {
+	_, err := r.Db.Exec(
+		ctx,
+		"INSERT INTO follows (follower_id, following_id) VALUES ($1, $2)",
+		userId, followingId,
+	)
+
+	return err
+}
+
+func (r *UserRepository) RemoveFollow(ctx context.Context, userId int, followingId int) error {
+	tag, err := r.Db.Exec(
+		ctx,
+		"DELETE FROM follows WHERE follower_id=$1 AND following_id=$2",
+		userId, followingId,
+	)
+
+	if tag.RowsAffected() == 0 {
+		return errors.New("0 columnas afectadas")
+	}
+	
+	return err
+}
+
+func (r *UserRepository) GetFollowingUsers(ctx context.Context, userId int) ([]model.UserFollowingResponse, error) {
+
+	rows, err := r.Db.Query(ctx, `
+	SELECT 
+		u.username, u.profile_picture_url, u.user_id, u.user_role,
+		CASE WHEN f.follower_id IS NOT NULL THEN TRUE ELSE FALSE END AS following
+	FROM users u
+	INNER JOIN follows f
+		ON f.follower_id = $1
+	WHERE u.user_id != $1
+	ORDER BY u.user_id`, userId)
+
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users, err := pgx.CollectRows(rows, pgx.RowToStructByName[model.UserFollowingResponse])
+
+	return users, err	
 }

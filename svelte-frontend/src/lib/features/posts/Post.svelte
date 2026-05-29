@@ -6,6 +6,7 @@
   import VoteButton from "./VoteButton.svelte";
 
   let {data} = $props()
+
 </script>
 
 <div class="container shadow-2xl rounded-2xl" in:fade>

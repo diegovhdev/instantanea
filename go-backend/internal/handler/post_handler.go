@@ -77,7 +77,7 @@ func (h *PostHandler) ListPosts(w http.ResponseWriter, r *http.Request) {
 func (h *PostHandler) GetPostsDispatcher(w http.ResponseWriter, r *http.Request) {
 
 	orderedByStr := r.URL.Query().Get("ordered-by")
-	var postLists []model.PostResponse
+	var postList []model.PostResponse
 	var err error
 	stopIdStr := r.URL.Query().Get("stopId")
 	var stopId int;
@@ -101,10 +101,11 @@ func (h *PostHandler) GetPostsDispatcher(w http.ResponseWriter, r *http.Request)
 
 	switch orderedByStr {
 	case "id":
-		postLists, err = h.Service.GetPostsById(r.Context(),userId, stopId)
+		postList, err = h.Service.GetPostsById(r.Context(),userId, stopId)
 	case "votes":
-		postLists, err = h.Service.GetPostsByVotes(r.Context(), userId, stopId)
+		postList, err = h.Service.GetPostsByVotes(r.Context(), userId, stopId)
 	case "favorites":
+		postList, err =h.Service.GetFavoritePosts(r.Context(), userId, stopId)
 	default:
 		http.Error(w, "argumento de url invalido", http.StatusBadRequest)
 		return
@@ -112,10 +113,9 @@ func (h *PostHandler) GetPostsDispatcher(w http.ResponseWriter, r *http.Request)
 
 	if err != nil {
 		http.Error(w, err.Error(), GetErrorStatusCode(err))
-		return
 	}
 
-	WriteJSON(w, http.StatusOK, postLists)
+	WriteJSON(w, http.StatusOK, postList)
 }
 
 func (h *PostHandler) PostVote(w http.ResponseWriter, r *http.Request) {

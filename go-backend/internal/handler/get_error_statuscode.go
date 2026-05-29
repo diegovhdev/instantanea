@@ -22,6 +22,8 @@ func GetErrorStatusCode(err error) int {
 			return http.StatusUnauthorized
 		case service.ErrNoContent:
 			return http.StatusNoContent
+		case service.ErrAlreadyVoted, service.ErrAlreadyFollowing, service.ErrAlreadyNotFollowing:
+			return http.StatusBadRequest
 		default:
 			return http.StatusInternalServerError
 	}

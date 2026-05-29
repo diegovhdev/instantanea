@@ -76,9 +76,14 @@
   }
 
   button:hover {
+    fill: var(--color-voted);
+    color: var(--color-voted);
+    transform: scale(1.15);
+  }
+
+  .voted:hover {
     fill: var(--color-primary-hover);
     color: var(--color-primary-hover);
-    transform: scale(1.15);
   }
 </style>
 

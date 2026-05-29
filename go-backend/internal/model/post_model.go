@@ -18,4 +18,5 @@ type PostResponse struct {
 	Text              string `json:"text"`
 	Votes             int    `json:"votes"`
 	Voted             bool   `json:"voted"`  
+	Following         bool   `json:"following"`
 }
