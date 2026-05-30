@@ -16,6 +16,7 @@
     userState.username = data.username;
     userState.profilePictureUrl = data.profilePictureUrl
     userState.id = data.userId;
+    userState.userRole = data.userRole;
     userState.logged = true;
     goto("/new")
   }

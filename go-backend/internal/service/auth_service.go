@@ -49,7 +49,7 @@ func (s *AuthService) Login(ctx context.Context, user model.UserLoginRequest) (s
 		return "", model.UserResponse{}, &CustomError{err, ErrIncorrectPassword}
 	}
 
-	token, err := GenerateToken(strconv.Itoa(userFound.UserId))
+	token, err := GenerateToken(strconv.Itoa(userFound.UserId), userFound.UserRole)
 
 	if err != nil {
 		return "", model.UserResponse{}, &CustomError{err, ErrTokenGeneration}

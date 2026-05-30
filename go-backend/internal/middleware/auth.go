@@ -8,7 +8,6 @@ import (
 	"strconv"
 )
 
-
 func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("access_token")
@@ -18,16 +17,14 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		tokenString := cookie.Value
-
-		claims, err := service.ValidateToken(tokenString)
+		claims, err := service.ValidateToken(cookie.Value)
 
 		if err != nil {
 			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 			return
 		}
 
-		token, err := service.GenerateToken(claims.Subject)
+		token, err := service.GenerateToken(claims.Subject, claims.UserRole)
 
 		if err != nil {
 			http.Error(w, "Error interno al refrescar el token", http.StatusInternalServerError)
@@ -38,9 +35,9 @@ func Auth(next http.Handler) http.Handler {
 
 		userId, _ := strconv.Atoi(claims.Subject)
 
-
 		ctx := context.WithValue(r.Context(), "UserID", userId)
-		r = r.WithContext(ctx)
+		ctx  = context.WithValue(ctx, "UserRole", claims.UserRole)
+		r    = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
 	})

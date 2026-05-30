@@ -129,6 +129,34 @@ func (s *PostService) UnvotePost(ctx context.Context, postId int, userId int) er
 	return nil
 }
 
+func (s *PostService) DeletePost(ctx context.Context, postId int) error {
+
+	post, err := s.Repository.GetPost(ctx, postId)
+	if err != nil {
+		return &CustomError{err, ErrInDatabase}
+	}
+
+	userId, ok := ctx.Value("UserID").(int)
+	if !ok {
+		return &CustomError{nil, ErrUnauthenticatedUser}
+	}
+
+	userRole, ok := ctx.Value("UserRole").(string)
+	if !ok {
+		return &CustomError{nil, ErrUnauthenticatedUser}
+	}
+
+	if post.UserId != userId && userRole != "mod" {
+		return &CustomError{nil, ErrUnauthorized}
+	}
+
+	if err := s.Repository.RemovePost(ctx, postId); err != nil {
+		return &CustomError{err, ErrInDatabase}
+	}
+
+	return nil
+}
+
 
 func NewPostService(repository *repository.PostRepository, uploader Uploader) *PostService {
 	return &PostService{

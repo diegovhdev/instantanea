@@ -9,13 +9,21 @@ import (
 
 var secretKey = []byte(os.Getenv("SECRET_KEY"))
 
-func GenerateToken(userId string) (string, error) {
+type AppClaims struct {
+	UserRole string `json:"user_role"`
+	jwt.RegisteredClaims
+}
 
-	claims := jwt.RegisteredClaims{
-		Subject:   userId,
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
-		IssuedAt:  jwt.NewNumericDate(time.Now()),
-		Issuer:    "instantanea-backend",
+func GenerateToken(userId string, userRole string) (string, error) {
+
+	claims := AppClaims{
+		UserRole: userRole,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   userId,
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "instantanea-backend",
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -28,17 +36,14 @@ func GenerateToken(userId string) (string, error) {
 	return signedToken, nil
 }
 
+func ValidateToken(tokenString string) (*AppClaims, error) {
 
-func ValidateToken(tokenString string) (*jwt.RegisteredClaims, error) {
-
-	claims := &jwt.RegisteredClaims{}
+	claims := &AppClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
-
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
-
 		return secretKey, nil
 	})
 

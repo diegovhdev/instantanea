@@ -14,6 +14,12 @@
     }
   }
 
+  function removePost(postId) {
+    posts = posts.filter(p => p.postId !== postId)
+  }
+
+  setContext("callbackRemove", removePost)
+
   setContext("callbackFollow", callbackFollow)
 </script>
 

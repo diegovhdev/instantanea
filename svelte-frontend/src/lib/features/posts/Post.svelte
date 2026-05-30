@@ -4,20 +4,27 @@
   import { fade } from "svelte/transition";
   import DownloadButton from "./DownloadButton.svelte";
   import VoteButton from "./VoteButton.svelte";
+  import RemoveButton from "./RemoveButton.svelte";
+  import { userState } from "$lib/stores/global-state.svelte";
 
   let {data} = $props()
 
 </script>
 
-<div class="container shadow-2xl rounded-2xl" in:fade>
+<div class="container shadow-2xl rounded-2xl" in:fade out:fade>
   <UserCard {data} />
   <p>{data.text}</p>
   <div class="post-image">
     <img src={data.url} alt="post">
   </div>
   <div class="footer">
-    <VoteButton --height="2.5rem" {data}/>
-    <DownloadButton --height="2.5rem" {data}/>
+    <div>
+      <VoteButton --height="2.5rem" {data}/>
+      <DownloadButton --height="2.5rem" {data}/>
+    </div>
+    {#if userState.id === data.userId || userState.userRole === "mod"}
+      <RemoveButton --height="2.5rem" {data}/>
+    {/if}
   </div>
 </div>
 
@@ -33,6 +40,12 @@
   div > .footer {
     display: flex;
     justify-content: space-between;
+  }
+
+  .footer > div {
+    display: flex;
+    gap: 1rem;
+
   }
 
   .post-image {

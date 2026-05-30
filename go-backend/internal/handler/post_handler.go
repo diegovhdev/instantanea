@@ -170,10 +170,30 @@ func (h *PostHandler) DeleteVote(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (h *PostHandler) DeletePost(w http.ResponseWriter, r *http.Request) {
+	postIdStr := r.PathValue("id")
+	postId, err := strconv.Atoi(postIdStr)
+
+	if err != nil {
+		http.Error(w, "el id debe ser un numero", http.StatusBadRequest)
+		return
+	}
+
+	err = h.Service.DeletePost(r.Context(), postId)
+
+	if err != nil {
+		http.Error(w, err.Error(), GetErrorStatusCode(err))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 
 func (h *PostHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.Handle("POST /posts", h.middleware.HandlerFunc(h.Post))
 	mux.Handle("GET /posts", h.middleware.HandlerFunc(h.GetPostsDispatcher))
+	mux.Handle("DELETE /posts/{id}", h.middleware.HandlerFunc(h.DeletePost))
 	mux.Handle("POST /posts/{id}/vote", h.middleware.HandlerFunc(h.PostVote))
 	mux.Handle("DELETE /posts/{id}/vote", h.middleware.HandlerFunc(h.DeleteVote))
 }

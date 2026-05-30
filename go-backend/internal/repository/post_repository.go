@@ -170,10 +170,6 @@ func (r *PostRepository) RemoveVote(ctx context.Context, postId int, userId int)
 	return err
 }
 
-func (r *PostRepository) RemovePost(ctx context.Context, postId int) error {
-	return nil
-}
-
 func (r *PostRepository) GetPost(ctx context.Context, postId int) (model.Post, error) {
 
 	rows, err := r.Db.Query(ctx,"SELECT post_id, user_id, url, votes, public_id, text FROM posts WHERE post_id=$1", postId)
@@ -189,6 +185,24 @@ func (r *PostRepository) GetPost(ctx context.Context, postId int) (model.Post, e
 	}
 
 	return post, nil
+}
+
+func (r *PostRepository) RemovePost(ctx context.Context, postId int) error {
+	tag, err := r.Db.Exec(
+		ctx,
+		"UPDATE posts SET is_removed=TRUE WHERE post_id=$1",
+		postId,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	if tag.RowsAffected() == 0 {
+		return errors.New("0 columnas afectadas")
+	}
+
+	return nil
 }
 
 

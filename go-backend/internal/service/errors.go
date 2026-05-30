@@ -26,6 +26,7 @@ var ErrUserCouldNotBeDeleted = errors.New("No se pudo eliminar el usuario")
 var ErrAlreadyVoted = errors.New("Ya hay un voto registrado")
 var ErrAlreadyFollowing = errors.New("Ya se esta siguiendo al usuario")
 var ErrAlreadyNotFollowing = errors.New("No se esta siguiendo al usuario")
+var ErrUnauthorized = errors.New("no tienes permiso para realizar esta acción")
 
 
 type CustomError struct {

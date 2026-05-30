@@ -254,3 +254,16 @@ export async function getFollowingUsers(userId) {
   const data = await response.json();
   return data;
 }
+
+export async function deletePost(postId) {
+  const response = await fetch(`${prefix}/posts/${postId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+}
