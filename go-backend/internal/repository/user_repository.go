@@ -197,15 +197,14 @@ func (r *UserRepository) RemoveFollow(ctx context.Context, userId int, following
 func (r *UserRepository) GetFollowingUsers(ctx context.Context, userId int) ([]model.UserFollowingResponse, error) {
 
 	rows, err := r.Db.Query(ctx, `
-	SELECT 
-		u.username, u.profile_picture_url, u.user_id, u.user_role,
-		CASE WHEN f.follower_id IS NOT NULL THEN TRUE ELSE FALSE END AS following
-	FROM users u
-	INNER JOIN follows f
-		ON f.follower_id = $1
-	WHERE u.user_id != $1
-	ORDER BY u.user_id`, userId)
-
+    SELECT 
+        u.username, u.profile_picture_url, u.user_id, u.user_role,
+        TRUE AS following
+    FROM follows f
+    INNER JOIN users u
+        ON u.user_id = f.following_id
+    WHERE f.follower_id = $1
+    ORDER BY u.user_id`, userId)
 
 	if err != nil {
 		return nil, err

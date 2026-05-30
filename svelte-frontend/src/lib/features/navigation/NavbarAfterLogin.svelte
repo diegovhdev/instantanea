@@ -22,7 +22,7 @@
   <h1>Instantanea 📸</h1>
   <div>
     <a href="/upload">Publicar</a>
-    <UserProfile --height="3.4rem" src={userState.profilePictureUrl} callback={ProfileOptionsPopup}>{userState.username}</UserProfile>
+    <UserProfile --height="3.4rem" src={userState.profilePictureUrl}>{userState.username}</UserProfile>
     <SettingsButton />
     {#if ProfileOptions.show}
       <ProfileActions />

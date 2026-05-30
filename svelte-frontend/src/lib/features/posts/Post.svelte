@@ -49,16 +49,16 @@
   }
 
   .post-image {
-	  max-width: 600px;
-    max-height: 800px;
-	  overflow: hidden;
+    max-width: 600px;
+    width: 100%;           
     align-self: center;
   }
 
   .post-image img {
-	  max-width: 100%;
-	  max-height: 100%;
-	  object-fit: cover;
-	  display: block;
+    width: 100%;
+    height: auto;          /* mantiene proporciones siempre */
+    max-height: 700px;     /* límite visual */
+    object-fit: contain;   /* si llega al límite, no recorta */
+    display: block;
   }
 </style>

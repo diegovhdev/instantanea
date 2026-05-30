@@ -1,37 +1,46 @@
 package main
 
 import (
+	"io/fs"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
 type SpaHandler struct {
-	distDir string
-	fs      http.Handler
+    fs http.FileSystem
 }
 
-func NewSpaHandler(dist string) *SpaHandler {
-	return &SpaHandler{
-		distDir: dist,
-		fs:      http.FileServer(http.Dir(dist)),
-	}
+func NewSpaHandler(fsys fs.FS) *SpaHandler {
+    return &SpaHandler{fs: http.FS(fsys)}
 }
 
-func (h *SpaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    path := filepath.Join(h.distDir, filepath.Clean(r.URL.Path))
+func (s *SpaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    fileServer := http.FileServer(s.fs)
 
-    if !strings.HasPrefix(path, filepath.Clean(h.distDir)) {
-        http.Error(w, "invalid path", http.StatusBadRequest)
+    // Limpiar el path y quitar el "/" inicial para abrir con fs
+    path := strings.TrimPrefix(r.URL.Path, "/")
+    if path == "" {
+        path = "index.html"
+    }
+
+    f, err := s.fs.Open(path)
+    if err != nil {
+        // Archivo no existe → fallback al SPA
+        r2 := r.Clone(r.Context())
+        r2.URL.Path = "/"
+        fileServer.ServeHTTP(w, r2)
+        return
+    }
+    defer f.Close()
+
+    // Si es directorio, servir index.html
+    stat, err := f.Stat()
+    if err != nil || stat.IsDir() {
+        r2 := r.Clone(r.Context())
+        r2.URL.Path = "/"
+        fileServer.ServeHTTP(w, r2)
         return
     }
 
-    info, err := os.Stat(path)
-    if err != nil || info.IsDir() {
-        http.ServeFile(w, r, filepath.Join(h.distDir, "index.html"))
-        return
-    }
-
-    h.fs.ServeHTTP(w, r)
+    fileServer.ServeHTTP(w, r)
 }

@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"instantanea/internal/handler"
 	"instantanea/internal/middleware"
 	"instantanea/internal/repository"
 	"instantanea/internal/service"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +19,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
+
+//go:embed all:build
+var buildFS embed.FS
 
 func main() {
 	
@@ -75,6 +80,12 @@ func main() {
 	authHandler.RegisterRoutes(mux)
 	postHandler.RegisterRoutes(mux)
 	userHandler.RegisterRoutes(mux)
+
+    stripped, err := fs.Sub(buildFS, "build")
+    if err != nil {
+        log.Fatal(err)
+    }
+    mux.Handle("/", NewSpaHandler(stripped))
 
 	fmt.Println("Inicio el servidor en el puerto :8080")
 

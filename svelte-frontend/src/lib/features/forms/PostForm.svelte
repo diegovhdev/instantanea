@@ -37,7 +37,7 @@
 <form onsubmit={handleSubmit} in:fade>
   <textarea maxlength="255" name="text" id="post" bind:value={text} placeholder="Escribe aca..."></textarea>
   <label for="image-upload" id="image-label">Subir imagen ↑</label>
-  <input type="file" accept="image/png, image/jpeg" name="image-upload" id="image-upload" class="inputfile" bind:files required>
+  <input type="file" accept="image/png, image/jpeg, image/webp" name="image-upload" id="image-upload" class="inputfile" bind:files required>
   {#if imageURL !== ""}
     <img src={imageURL} alt="">
   {/if}

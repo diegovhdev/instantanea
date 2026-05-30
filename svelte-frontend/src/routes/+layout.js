@@ -1,11 +1,15 @@
 import { page } from "$app/state";
-import { userState } from "$lib/stores/global-state.svelte.js";
+import { loadState, userState } from "$lib/stores/global-state.svelte.js";
 import { redirect } from "@sveltejs/kit";
 
 export const ssr = false;
 export const prerender = false;
 
 export function load({ url }) {
+  if (typeof window !== "undefined") {
+    loadState();
+  }
+
   if (
     !userState.logged &&
     url.pathname !== "/login" &&

@@ -236,3 +236,33 @@ func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, userId i
 
 	return posts, err
 }
+
+func (r *PostRepository) GetManyFromUser(ctx context.Context, userId int, otherUserId int) ([]model.PostResponse, error) {
+	rows, err := r.Db.Query(ctx, `
+	SELECT
+    	p.post_id, p.user_id, p.url, p.text, p.votes, 
+    	u.username,
+    	u.profile_picture_url,
+    	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
+		CASE WHEN f.follower_id IS NOT NULL THEN TRUE ELSE FALSE END AS following
+	FROM posts p
+	LEFT JOIN votes v
+   		ON p.post_id = v.post_id
+    	AND v.user_id = $1
+	INNER JOIN users u
+    	ON p.user_id = u.user_id
+	LEFT JOIN follows f
+    	ON f.following_id = p.user_id
+    	AND f.follower_id = $1
+	WHERE p.is_removed = FALSE AND p.user_id = $2 AND u.is_active = TRUE
+	ORDER BY p.post_id DESC;`, userId, otherUserId)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	posts, err := pgx.CollectRows(rows, pgx.RowToStructByName[model.PostResponse])
+
+	return posts, err
+}

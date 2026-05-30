@@ -231,14 +231,14 @@ func (h *UserHandler) GetFollowingUsers(w http.ResponseWriter, r *http.Request) 
 
 
 func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
-	mux.Handle("PATCH /users/{id}/profile-picture", h.middleware.HandlerFunc(h.PatchProfilePicture))
-	mux.Handle("PATCH /users/{id}/username", h.middleware.HandlerFunc(h.PatchUsername))
-	mux.Handle("PATCH /users/{id}/email", h.middleware.HandlerFunc(h.PatchEmail))
-	mux.Handle("POST /users/{id}/password", h.middleware.HandlerFunc(h.PostPassword))
-	mux.Handle("DELETE /users/{id}", h.middleware.HandlerFunc(h.DeleteUser))
-	mux.Handle("POST /users/{id}/follow", h.middleware.HandlerFunc(h.PostFollow))
-	mux.Handle("DELETE /users/{id}/follow", h.middleware.HandlerFunc(h.DeleteFollow))
-	mux.Handle("GET /users/{id}/following", h.middleware.HandlerFunc(h.GetFollowingUsers))
+	mux.Handle("PATCH /api/users/{id}/profile-picture", h.middleware.HandlerFunc(h.PatchProfilePicture))
+	mux.Handle("PATCH /api/users/{id}/username", h.middleware.HandlerFunc(h.PatchUsername))
+	mux.Handle("PATCH /api/users/{id}/email", h.middleware.HandlerFunc(h.PatchEmail))
+	mux.Handle("POST /api/users/{id}/password", h.middleware.HandlerFunc(h.PostPassword))
+	mux.Handle("DELETE /api/users/{id}", h.middleware.HandlerFunc(h.DeleteUser))
+	mux.Handle("POST /api/users/{id}/follow", h.middleware.HandlerFunc(h.PostFollow))
+	mux.Handle("DELETE /api/users/{id}/follow", h.middleware.HandlerFunc(h.DeleteFollow))
+	mux.Handle("GET /api/users/{id}/following", h.middleware.HandlerFunc(h.GetFollowingUsers))
 }
 
 

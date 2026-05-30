@@ -1,8 +1,8 @@
 import { redirect } from "@sveltejs/kit";
-import { userState } from "$lib/stores/global-state.svelte";
+import { clearState, userState } from "$lib/stores/global-state.svelte";
 import { goto } from "$app/navigation";
 
-const prefix = "http://localhost:8080";
+const prefix = "/api";
 
 export async function login(payload) {
   const response = await fetch(`${prefix}/auth/login`, {
@@ -41,8 +41,7 @@ export async function logout() {
     method: "GET",
     credentials: "include",
   });
-  userState.logged = false;
-  userState.username = "";
+  clearState();
   goto("/login");
 }
 
@@ -54,20 +53,7 @@ export async function post(formData) {
   });
 
   if (response.status === 401) {
-    userState.logged = false;
-    goto("/login");
-  }
-}
-
-export async function feed(payload) {
-  const response = await fetch(`${prefix}/feed`, {
-    method: "GET",
-    body: payload,
-    credentials: "include",
-  });
-
-  if (response.status === 401) {
-    userState.logged = false;
+    clearState();
     goto("/login");
   }
 }
@@ -81,6 +67,12 @@ export async function patchProfilePicture(formData) {
       credentials: "include",
     },
   );
+
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
 
   if (!response.ok) {
     let message = await response.text();
@@ -107,6 +99,12 @@ export async function patchUsername(data) {
     body: JSON.stringify(data),
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
   if (!response.ok) {
     let message = await response.text();
     throw new Error(message);
@@ -125,6 +123,12 @@ export async function patchEmail(data) {
     body: JSON.stringify(data),
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
   if (!response.ok) {
     let message = await response.text();
     throw new Error(message);
@@ -140,6 +144,12 @@ export async function postPassword(data) {
     credentials: "include",
     body: JSON.stringify(data),
   });
+
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
 
   if (!response.ok) {
     let message = await response.text();
@@ -171,6 +181,12 @@ export async function getPosts(orderedBy) {
     credentials: "include",
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return [];
+  }
+
   if (!response.ok) {
     let message = await response.text();
     console.log(message);
@@ -190,6 +206,12 @@ export async function votePost(postId) {
     credentials: "include",
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
   if (!response.ok) {
     let message = await response.text();
     console.log(message);
@@ -202,6 +224,12 @@ export async function unvotePost(postId) {
     method: "DELETE",
     credentials: "include",
   });
+
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
 
   if (!response.ok) {
     let message = await response.text();
@@ -216,6 +244,12 @@ export async function followUser(userId) {
     credentials: "include",
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
   if (!response.ok) {
     let message = await response.text();
     console.log(message);
@@ -229,6 +263,12 @@ export async function unfollowUser(userId) {
     credentials: "include",
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
   if (!response.ok) {
     let message = await response.text();
     console.log(message);
@@ -241,6 +281,12 @@ export async function getFollowingUsers(userId) {
     method: "GET",
     credentials: "include",
   });
+
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
 
   if (!response.ok) {
     let message = await response.text();
@@ -261,9 +307,40 @@ export async function deletePost(postId) {
     credentials: "include",
   });
 
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
   if (!response.ok) {
     let message = await response.text();
     console.log(message);
     throw new Error(message);
   }
+}
+
+export async function getPostsFromUser(userId) {
+  const response = await fetch(`${prefix}/users/${userId}/posts`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    clearState();
+    goto("/login");
+    return;
+  }
+
+  if (!response.ok) {
+    let message = await response.text();
+    console.log(message);
+    throw new Error(message);
+  }
+
+  if (response.status == 204) {
+    return [];
+  }
+  const data = await response.json();
+  return data;
 }

@@ -66,6 +66,21 @@ func (s *PostService) GetPostsById(ctx context.Context, userId int, stopId int) 
 	return posts, nil
 }
 
+func (s *PostService) GetPostsByUser(ctx context.Context, userId int, otherUserId int) ([]model.PostResponse, error) {
+	posts, err := s.Repository.GetManyFromUser(ctx, userId, otherUserId)
+
+	if err != nil {
+		return nil, &CustomError{err, ErrInDatabase}
+	}
+
+	if len(posts) == 0 {
+		return nil, &CustomError{nil, ErrNoContent}
+	}
+
+	return posts, nil
+}
+
+
 func (s *PostService) GetPostsByVotes(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
 	posts, err := s.Repository.GetManyOrderedByVotes(ctx, userId, stopId)
 

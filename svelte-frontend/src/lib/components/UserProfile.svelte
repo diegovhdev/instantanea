@@ -1,14 +1,15 @@
 <script>
+  import { userState } from "$lib/stores/global-state.svelte";
   import ProfilePicture from "./ProfilePicture.svelte";
 
-  let {src, children, callback} = $props()
+  let {src, children} = $props()
   let hover = $state(false)
 </script>
 
-<button class="profile" onclick={callback}>
+<a class="profile" href={`users/${userState.id}`}>
   <ProfilePicture {src} />
   {@render children()}
-</button>
+</a>
 
 <style>
 

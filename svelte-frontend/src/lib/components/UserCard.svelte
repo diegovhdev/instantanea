@@ -47,10 +47,10 @@ async function handleClick() {
 
 
 <div class="container" out:fade style:gap>
-  <button class="card">
+  <a class="card" href={`users/${data.userId}`}>
       <ProfilePicture src={data.profilePictureUrl} --height="4rem"/>
       <h3>{data.username}</h3>
-  </button>
+  </a>
   {#if userState.id !== data.userId}
     <button class="follow-button rounded-2xl" onclick={handleClick}>{textFollow}</button>
   {:else}
@@ -62,6 +62,7 @@ async function handleClick() {
 <style>
   .container {
     justify-content: space-between;
+    gap: 1.5rem;
   }
 
   h3 {
@@ -78,9 +79,16 @@ async function handleClick() {
     align-items: center;
   }
 
-  button {
+  a {
     display: flex;
     align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    transform: scale(1.1);
   }
 
   .follow-button {
