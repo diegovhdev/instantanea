@@ -87,7 +87,7 @@ func main() {
     }
     mux.Handle("/", NewSpaHandler(stripped))
 
-	fmt.Println("Inicio el servidor en el puerto :8080")
+	fmt.Println("Inicio el servidor en el puerto http://localhost:8080/")
 
 	wrappper := middleware.Logger(middleware.CORS(mux))
 

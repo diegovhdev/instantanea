@@ -1,0 +1,1 @@
+import"./DsnmJJEf.js";import{t as e,c as i,r as o}from"./CvTxIcxa.js";import{a as m,f}from"./BK_1n8ec.js";import{s as l}from"./C1fSScMr.js";var c=f('<div class="avatar svelte-15zr69j"><img alt="profile" class="svelte-15zr69j"/></div>');function u(t,a){var r=c(),s=i(r);o(r),e(()=>l(s,"src",a.src)),m(t,r)}export{u as P};
