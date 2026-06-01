@@ -203,7 +203,7 @@ func (r *UserRepository) GetFollowingUsers(ctx context.Context, userId int) ([]m
     FROM follows f
     INNER JOIN users u
         ON u.user_id = f.following_id
-    WHERE f.follower_id = $1
+    WHERE f.follower_id = $1 AND u.is_active = TRUE
     ORDER BY u.user_id`, userId)
 
 	if err != nil {

@@ -6,6 +6,7 @@
   import VoteButton from "./VoteButton.svelte";
   import RemoveButton from "./RemoveButton.svelte";
   import { userState } from "$lib/stores/global-state.svelte";
+  import { elapsedtime } from "$lib/services/elapsed-time";
 
   let {data} = $props()
 
@@ -14,6 +15,7 @@
 <div class="container shadow-2xl rounded-2xl" in:fade out:fade>
   <UserCard {data} />
   <p>{data.text}</p>
+  <p class="date">{elapsedtime(data.createdAt)}</p>
   <div class="post-image">
     <img src={data.url} alt="post">
   </div>
@@ -60,5 +62,15 @@
     max-height: 700px;     /* límite visual */
     object-fit: contain;   /* si llega al límite, no recorta */
     display: block;
+  }
+
+  p {
+    white-space: pre-wrap;
+  }
+
+  .date {
+    font-size: 0.9rem;
+    color: var(--color-primary-hover);
+    font-weight: 500;
   }
 </style>

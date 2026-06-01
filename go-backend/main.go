@@ -26,7 +26,7 @@ var buildFS embed.FS
 func main() {
 	
 	 if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error archivo .env no existe (ignorar en producción)")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)

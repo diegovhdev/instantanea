@@ -50,7 +50,7 @@ func (r *PostRepository) GetMany(ctx context.Context, limit int, offset int) ([]
 func (r *PostRepository) GetManyOrderedById(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
 	rows, err := r.Db.Query(ctx, `
 	SELECT
-    	p.post_id, p.user_id, p.url, p.text, p.votes, 
+    	p.post_id, p.user_id, p.url, p.text, p.votes, p.created_at,
     	u.username,
     	u.profile_picture_url,
     	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
@@ -80,7 +80,7 @@ func (r *PostRepository) GetManyOrderedById(ctx context.Context, userId int, sto
 func (r *PostRepository) GetManyOrderedByVotes(ctx context.Context, userId int, stopId int) ([]model.PostResponse, error) {
 	rows, err := r.Db.Query(ctx, `
 	SELECT
-    	p.post_id, p.user_id, p.url, p.text, p.votes, 
+    	p.post_id, p.user_id, p.url, p.text, p.votes, p.created_at,
     	u.username,
     	u.profile_picture_url,
     	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
@@ -210,7 +210,7 @@ func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, userId i
 
 	rows, err := r.Db.Query(ctx, `
 	SELECT
-    	p.post_id, p.user_id, p.url, p.text, p.votes, 
+    	p.post_id, p.user_id, p.url, p.text, p.votes, p.created_at,
     	u.username,
     	u.profile_picture_url,
     	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,
@@ -240,7 +240,7 @@ func (r *PostRepository) GetManyOrderedByFavorites(ctx context.Context, userId i
 func (r *PostRepository) GetManyFromUser(ctx context.Context, userId int, otherUserId int) ([]model.PostResponse, error) {
 	rows, err := r.Db.Query(ctx, `
 	SELECT
-    	p.post_id, p.user_id, p.url, p.text, p.votes, 
+    	p.post_id, p.user_id, p.url, p.text, p.votes, p.created_at,
     	u.username,
     	u.profile_picture_url,
     	CASE WHEN v.user_id IS NOT NULL THEN TRUE ELSE FALSE END AS voted,

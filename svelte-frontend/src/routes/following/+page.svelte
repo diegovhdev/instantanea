@@ -29,9 +29,13 @@
 </script>
 
 <div in:fade>
+  {#if users.length === 0 }
+    <h3>No estas siguiendo a ningun usuario</h3>
+  {:else}
   {#each users as data (data.userId)}
-    <UserCard {data} gap="3rem"/>
+    <UserCard {data} gap="2.5rem"/>
   {/each}
+  {/if}
 </div>
 
 
@@ -41,5 +45,9 @@
     align-items: center;
     justify-content: flex-start;
     gap: 5rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
   }
 </style>
