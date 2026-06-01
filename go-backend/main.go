@@ -49,6 +49,12 @@ func main() {
 		os.Getenv("CLOUDINARY_API_SECRET"),
 	)
 
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
 	if err != nil {
 		panic(err)
 	}
@@ -87,10 +93,10 @@ func main() {
     }
     mux.Handle("/", NewSpaHandler(stripped))
 
-	fmt.Println("Inicio el servidor en el puerto http://localhost:80/")
+	fmt.Println("Inicio el servidor en el puerto http://localhost:"+port+"/")
 
 	wrappper := middleware.Logger(middleware.CORS(mux))
 
-	err = http.ListenAndServe(":80", wrappper)
+	err = http.ListenAndServe(":"+port, wrappper)
 	log.Fatal(err)
 }
