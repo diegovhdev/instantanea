@@ -19,7 +19,7 @@
 </script>
 
 <nav transition:slide>
-  <h1>Instantanea 📸</h1>
+  <h1>Instantanea <span>📸</span></h1>
   <div>
     <a href="/upload">Publicar</a>
     <UserProfile --height="3.4rem" src={userState.profilePictureUrl}>{userState.username}</UserProfile>
@@ -45,15 +45,18 @@
   }
 
   nav > h1 {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    display: flex;
     font-weight: 600;
-    font-size: 1.6rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
   }
 
   nav > div {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    gap: 1rem;
     font-size: 1.1rem;
     position: relative;
   }

@@ -58,9 +58,9 @@
 
   .post-image img {
     width: 100%;
-    height: auto;          /* mantiene proporciones siempre */
-    max-height: 700px;     /* límite visual */
-    object-fit: contain;   /* si llega al límite, no recorta */
+    height: auto;          
+    max-height: 700px;     
+    object-fit: contain;
     display: block;
   }
 

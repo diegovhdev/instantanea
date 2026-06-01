@@ -20,6 +20,8 @@
 <style>
   button {
     display: flex;
+    padding-left: 0.4rem;
+    padding-right: 0.2rem;
     align-items: center;
     justify-content: center;
     cursor: pointer;

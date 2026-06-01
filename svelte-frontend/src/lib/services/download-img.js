@@ -1,4 +1,6 @@
-export async function downloadImage(url, filename = "imagen.jpg") {
+export async function downloadImage(url) {
+  const filename = url.split("/").at(-1);
+
   const res = await fetch(url);
   const blob = await res.blob();
 
