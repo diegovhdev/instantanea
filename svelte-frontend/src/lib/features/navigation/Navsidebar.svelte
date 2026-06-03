@@ -59,8 +59,8 @@
   a {
     color: var(--color-secondary);
     font-weight: 600;
-    font-size: 1.3rem;
-    padding: 0.3rem 1rem;
+    font-size: clamp(1rem, 1.4vw, 1.7rem);
+    padding: 0.3rem 0.8rem;
     transition: background-color, 0.3s, ease, color 0.3s ease;
     cursor: pointer;
   }

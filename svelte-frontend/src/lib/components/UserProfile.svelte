@@ -24,6 +24,8 @@
   cursor: pointer;
   transform: scale(0.9);
   transition: transform 0.3s ease;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .profile:hover {
